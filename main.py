@@ -23,22 +23,25 @@ class amazons_game:
         """
         player: int [1-2]: white or black
         """
+        # Create copy of board in case future move part is illegal
         board_copy = self.board
-        if board_copy(start_pos) == player:
-            [legal, board_copy] = self.turn_move(board_copy, start_pos, end_pos)
+        legal = True
+
+        if board_copy[start_pos] == player:
+            [board_copy, legal] = self._turn_move_(board_copy, start_pos, end_pos)
             if not legal:
                 return False
         else:
             return False
 
-        [legal, board_copy] = self.turn_arrow(board_copy, end_pos, arrow_pos)
+        [board_copy, legal] = self._turn_arrow_(board_copy, end_pos, arrow_pos)
         if not legal:
             return False
 
         self.board = board_copy
         return True
 
-    def turn_move(self, board, start_pos, end_pos):
+    def _turn_move_(self, board, start_pos, end_pos):
         """
         Checks if legal move, then takes move on copy of board
         """
@@ -56,13 +59,11 @@ class amazons_game:
                 # TODO
                 print("Check for obs")
         else:
-            # We are moving diagonally, check for obstactles
-            # TODO
-            print("Check for obs")
+            legal
 
         return board, True
 
-    def turn_arrow(self, board, curr_pos, arrow_pos):
+    def _turn_arrow_(self, board, curr_pos, arrow_pos):
         # Check if arrow destination is empty
         if board[arrow_pos] != 0:
             return board, False
@@ -81,7 +82,7 @@ class amazons_game:
 def main():
     game = amazons_game()
     game.board_print()
-    game.turn_arrow(game.board, (0, 3), (0, 3))
+    game.take_turn(1, (0, 3), (5, 3), (5, 5))
     game.board_print()
 
 
