@@ -11,7 +11,7 @@ class amazons_game:
         self.board[3, 9] = 1
 
         self.board[6, 0] = 2
-        self.board[9, 4] = 2
+        self.board[9, 3] = 2
         self.board[6, 9] = 2
         self.board[9, 6] = 2
         self.whites_turn = True
@@ -44,26 +44,46 @@ class amazons_game:
         """
         # Check if destination is free
         if board[end_pos] != 0:
-            return board,False
+            return board, False
 
         # Check if position is accessible via straight lines
-        if abs(start_pos[0]-end_pos[0]) != abs(start_pos[1]-end_pos[1]):
+        if abs(start_pos[0] - end_pos[0]) != abs(start_pos[1] - end_pos[1]):
             # Not a diagonal move, check straight move
-            if not((start_pos[0] == end_pos[0]) or (start_pos[2] == end_pos[2])):
+            if not ((start_pos[0] == end_pos[0]) or (start_pos[1] == end_pos[1])):
                 return board, False
             else:
                 # We are moving in a straight line, check for obstacles
                 # TODO
+                print("Check for obs")
         else:
             # We are moving diagonally, check for obstactles
             # TODO
+            print("Check for obs")
 
         return board, True
 
     def turn_arrow(self, board, curr_pos, arrow_pos):
-        # TODO: east check if arrow dest is available and is in a direction we can shoot in
+        # Check if arrow destination is empty
+        if board[arrow_pos] != 0:
+            return board, False
+
+        # Check if position is accessible via straight lines
+        if abs(curr_pos[0] - arrow_pos[0]) != abs(curr_pos[1] - arrow_pos[1]):
+            # Not a diagonal move, check straight move
+            if not ((curr_pos[0] == arrow_pos[0]) or (curr_pos[1] == arrow_pos[1])):
+                return board, False
+
+        # Move is possible, dont need to consider obstacles so complete move
+        board[arrow_pos] = 3
         return board, True
 
 
-amazons_game().board_print()
+def main():
+    game = amazons_game()
+    game.board_print()
+    game.turn_arrow(game.board, (0, 3), (0, 3))
+    game.board_print()
 
+
+if __name__ == "__main__":
+    main()
