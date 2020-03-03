@@ -12,15 +12,19 @@ class othello:
         To create a new ai, make a child class :)
         """
 
-        def __init__(self, name):
-            self.name = name
+        def __init__(self):
+            self.name = "base_ai"
 
     def __init__(self):
         self.mainBoard = self.getNewBoard()
         self.resetBoard(self.mainBoard)
 
-    def startgame(self, bot=ai("human")):
-        if bot.name != "human":
+    def startgame(self, bot=ai()):
+        if bot.name == "base_ai":
+            print("Welcome base ai I am treating you like a human.")
+        elif bot.name == "human":
+            print("Welcome human.")
+        else:
             print("I only know how to deal with humans at the moment, sorry.")
             return
 
@@ -80,21 +84,6 @@ class othello:
 
         else:
             print("The game was a tie!")
-
-    def drawboard(self, board):
-        horizontal = "  +---+---+---+---+---+---+---+---+ "
-        vertical = "  |   |   |   |   |   |   |   |   | "
-
-        print("   1   2   3   4   5   6   7   8")
-        print(horizontal)
-        for y in range(8):
-            print(vertical)
-            print(y + 1, end=" ")
-            for x in range(8):
-                print("| %s" % (board[x][y]), end=" ")
-            print("|")
-            print(vertical)
-            print(horizontal)
 
     def resetboard(self, board):
         for x in range(8):

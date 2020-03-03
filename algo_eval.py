@@ -1,6 +1,9 @@
+"""
+This is the file that all evaluations will take place, ideally we should
+not have to access Othello.py again :)
+"""
 from Othello import othello
-
-human_player = othello.ai('human')
+from human_ai_example import human_ai
 
 game = othello()
-game.startgame(human_player)
+game.startgame(human_ai())
