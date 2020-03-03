@@ -1,28 +1,35 @@
 import random
-import sys
 
 
 class othello:
+    """
+    Encapsulation of the board game othello
+    """
+
     class ai:
-        def __init__(self,name):
+        """
+        Class to encapsulate all ai behaviour, more to come.
+        To create a new ai, make a child class :)
+        """
+
+        def __init__(self, name):
             self.name = name
 
     def __init__(self):
         self.mainBoard = self.getNewBoard()
         self.resetBoard(self.mainBoard)
 
-    def startgame(self, bot=ai('human')):
-        if bot.name != 'human':
-            print('I only know how to deal with humans at the moment, sorry.')
+    def startgame(self, bot=ai("human")):
+        if bot.name != "human":
+            print("I only know how to deal with humans at the moment, sorry.")
             return
 
         self.playerTile, self.computerTile = self.enterPlayerTile()
-        turn = self.whoGoesFirst()
-        print("The " + turn + " will go first.")
+        turn = self.firstTurn()
 
         while True:
-            if turn == "player":
-                # Player's turn.
+            if turn == "ai":
+                # AI
                 self.drawBoard(self.mainBoard)
 
                 self.showPoints(self.playerTile, self.computerTile, self.mainBoard)
@@ -30,19 +37,16 @@ class othello:
 
                 if move == "quit":
                     print("Thanks for playing!")
-                    sys.exit()  # terminate the program
+                    return
 
                 else:
-
                     self.makeMove(self.mainBoard, self.playerTile, move[0], move[1])
 
                 if self.getValidMoves(self.mainBoard, self.computerTile) == []:
-
                     break
 
                 else:
-
-                    turn = "computer"
+                    turn = "rule_ai"
 
             else:
                 # Computer's turn.
@@ -54,8 +58,10 @@ class othello:
                 if self.getValidMoves(self.mainBoard, self.playerTile) == []:
                     break
                 else:
-                    turn = "player"
+                    turn = "ai"
+        self.displayResults()
 
+    def displayResults(self):
         # Display the final score.
         self.drawBoard(self.mainBoard)
         scores = self.getScoreOfBoard(self.mainBoard)
@@ -246,12 +252,11 @@ class othello:
         else:
             return ["O", "X"]
 
-    def whoGoesFirst(self):
-        # Randomly choose the player who goes first.
+    def firstTurn(self):
+        # Who plays first
         if random.randint(0, 1) == 0:
-            return "computer"
-        else:
-            return "player"
+            return "rule_ai"
+        return "ai"
 
     def playAgain(self):
         # This function returns True if the player wants to play again, otherwise it returns False.
@@ -340,5 +345,4 @@ class othello:
             "You have %s points. The computer has %s points."
             % (scores[playerTile], scores[computerTile])
         )
-
 
