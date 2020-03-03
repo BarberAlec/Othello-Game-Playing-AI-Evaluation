@@ -6,11 +6,9 @@ class human_ai(othello.ai):
         self.name = "human"
 
     def getMove(self, board, playerTile):
-        # Let the player type in their move.
-        # Returns the move as [x, y] (or returns the string 'quit')
         DIGITS1TO8 = "1 2 3 4 5 6 7 8".split()
         while True:
-            print("Enter your move, or type quit to end the game")
+            print("Enter your move, or quit")
             move = input().lower()
             if move == "quit":
                 return "quit"
@@ -19,7 +17,6 @@ class human_ai(othello.ai):
                 y = int(move[1]) - 1
                 if self.isValidMove(board, playerTile, x, y) == False:
                     continue
-
                 else:
                     break
             else:
