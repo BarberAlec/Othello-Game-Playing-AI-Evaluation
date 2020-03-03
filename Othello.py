@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 
 class othello:
@@ -14,6 +15,73 @@ class othello:
 
         def __init__(self):
             self.name = "base_ai"
+
+        def isOnBoard(self, x, y):
+            return x >= 0 and x <= 7 and y >= 0 and y <= 7
+
+        def isValidMove(self, board, tile, xstart, ystart):
+            # Returns False if the player's move on space xstart, ystart is invalid.
+            # If it is a valid move, returns a list of spaces that would become the player's if they made a move here.
+            if board[xstart][ystart] != " " or not self.isOnBoard(xstart, ystart):
+                return False
+
+            board[xstart][ystart] = tile  # temporarily set the tile on the board.
+            if tile == "X":
+                otherTile = "O"
+            else:
+                otherTile = "X"
+            tilesToFlip = []
+            for xdirection, ydirection in [
+                [0, 1],
+                [1, 1],
+                [1, 0],
+                [1, -1],
+                [0, -1],
+                [-1, -1],
+                [-1, 0],
+                [-1, 1],
+            ]:
+                x, y = xstart, ystart
+                x += xdirection  # first step in the direction
+                y += ydirection  # first step in the direction
+                if self.isOnBoard(x, y) and board[x][y] == otherTile:
+                    # There is a piece belonging to the other player next to our piece.
+                    x += xdirection
+                    y += ydirection
+                    if not self.isOnBoard(x, y):
+                        continue
+
+                    while board[x][y] == otherTile:
+                        x += xdirection
+                        y += ydirection
+
+                        if not self.isOnBoard(
+                            x, y
+                        ):  # break out of while loop, then continue in for loop
+                            break
+
+                    if not self.isOnBoard(x, y):
+                        continue
+
+                    if board[x][y] == tile:
+                        # There are pieces to flip over. Go in the reverse direction until we reach the original space, noting all the tiles along the way.
+                        while True:
+                            x -= xdirection
+                            y -= ydirection
+                            if x == xstart and y == ystart:
+                                break
+                            tilesToFlip.append([x, y])
+
+            board[xstart][ystart] = " "  # restore the empty space
+            if (
+                len(tilesToFlip) == 0
+            ):  # If no tiles were flipped, this is not a valid move.
+                return False
+            return tilesToFlip
+
+        def getPlayerMove(self, board, playerTile):
+            print("WARNING: this is the base ai class, use a custom class please.")
+            return
 
     def __init__(self):
         self.mainBoard = self.getNewBoard()
@@ -39,7 +107,8 @@ class othello:
                 self.drawBoard(self.mainBoard)
 
                 self.showPoints(self.playerTile, self.computerTile, self.mainBoard)
-                move = self.getPlayerMove(self.mainBoard, self.playerTile)
+                # This is the only call to the bot :)
+                move = bot.getPlayerMove(self.mainBoard, self.playerTile)
 
                 if move == "quit":
                     print("Thanks for playing!")
@@ -65,10 +134,11 @@ class othello:
                     break
                 else:
                     self.turn = "ai"
+
+        # Game finished, show results
         self.displayResults()
 
     def displayResults(self):
-        # Display the final score.
         self.drawBoard(self.mainBoard)
         scores = self.getScoreOfBoard(self.mainBoard)
         print("X scored %s points. O scored %s points." % (scores["X"], scores["O"]))
@@ -77,13 +147,11 @@ class othello:
                 "You beat the computer by %s points! Congratulations!"
                 % (scores[self.playerTile] - scores[self.computerTile])
             )
-
         elif scores[self.playerTile] < scores[self.computerTile]:
             print(
                 "You lost. The computer beat you by %s points."
                 % (scores[self.computerTile] - scores[self.playerTile])
             )
-
         else:
             print("The game was a tie!")
 
