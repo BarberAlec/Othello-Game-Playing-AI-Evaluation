@@ -37,9 +37,6 @@ def getnewboard():
     return board
 
 
-# In[4]:
-
-
 def drawBoard(board):
     # This function prints out the board that it was passed. Returns None.
     HLINE = "  +---+---+---+---+---+---+---+---+"
@@ -293,9 +290,6 @@ def showPoints(playerTile, computerTile):
         "You have %s points. The computer has %s points."
         % (scores[playerTile], scores[computerTile])
     )
-
-
-# In[5]:
 
 
 print("Welcome to Reversi!")
