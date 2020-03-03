@@ -18,6 +18,7 @@ class othello:
     def __init__(self):
         self.mainBoard = self.getNewBoard()
         self.resetBoard(self.mainBoard)
+        self.turn = 0
 
     def startgame(self, bot=ai()):
         if bot.name == "base_ai":
@@ -28,11 +29,12 @@ class othello:
             print("I only know how to deal with humans at the moment, sorry.")
             return
 
-        self.playerTile, self.computerTile = self.enterPlayerTile()
-        turn = self.firstTurn()
+        # We will always be X, random player starts
+        self.playerTile, self.computerTile = ["X", "O"]
+        self.turn = self.firstTurn()
 
         while True:
-            if turn == "ai":
+            if self.turn == "ai":
                 # AI
                 self.drawBoard(self.mainBoard)
 
@@ -50,7 +52,7 @@ class othello:
                     break
 
                 else:
-                    turn = "rule_ai"
+                    self.turn = "rule_ai"
 
             else:
                 # Computer's turn.
@@ -62,7 +64,7 @@ class othello:
                 if self.getValidMoves(self.mainBoard, self.playerTile) == []:
                     break
                 else:
-                    turn = "ai"
+                    self.turn = "ai"
         self.displayResults()
 
     def displayResults(self):
@@ -84,23 +86,6 @@ class othello:
 
         else:
             print("The game was a tie!")
-
-    def resetboard(self, board):
-        for x in range(8):
-            for y in range(8):
-                board[x][y] = " "
-
-        board[3][3] = "X"
-        board[3][4] = "O"
-        board[4][3] = "O"
-        board[4][4] = "X"
-
-    def getnewboard(self):
-        board = []
-        for i in range(8):
-            board.append([" "] * 8)
-
-        return board
 
     def drawBoard(self, board):
         # This function prints out the board that it was passed. Returns None.
@@ -198,13 +183,6 @@ class othello:
         # Returns True if the coordinates are located on the board.
         return x >= 0 and x <= 7 and y >= 0 and y <= 7
 
-    def getBoardWithValidMoves(self, board, tile):
-        # Returns a new board with . marking the valid moves the given player can make.
-        dupeBoard = self.getBoardCopy(board)
-        for x, y in self.getValidMoves(dupeBoard, tile):
-            dupeBoard[x][y] = "."
-        return dupeBoard
-
     def getValidMoves(self, board, tile):
         # Returns a list of [x,y] lists of valid moves for the given player on the given board.
         validMoves = []
@@ -228,29 +206,11 @@ class othello:
 
         return {"X": xscore, "O": oscore}
 
-    def enterPlayerTile(self):
-        # Lets the player type which tile they want to be.
-        # Returns a list with the player's tile as the first item, and the computer's tile as the second.
-        tile = ""
-        while not (tile == "X" or tile == "O"):
-            print("Do you want to be X or O?")
-            tile = input().upper()
-        # the first element in the list is the player's tile, the second is the computer's tile.
-        if tile == "X":
-            return ["X", "O"]
-        else:
-            return ["O", "X"]
-
     def firstTurn(self):
         # Who plays first
         if random.randint(0, 1) == 0:
             return "rule_ai"
         return "ai"
-
-    def playAgain(self):
-        # This function returns True if the player wants to play again, otherwise it returns False.
-        print("Do you want to play again? (yes or no)")
-        return input().lower().startswith("y")
 
     def makeMove(self, board, tile, xstart, ystart):
         # Place the tile on the board at xstart, ystart, and flip any of the opponent's pieces.
