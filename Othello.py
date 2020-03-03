@@ -3,9 +3,19 @@ import sys
 
 
 class othello:
+    class ai:
+        def __init__(self,name):
+            self.name = name
+
     def __init__(self):
         self.mainBoard = self.getNewBoard()
         self.resetBoard(self.mainBoard)
+
+    def startgame(self, bot=ai('human')):
+        if bot.name != 'human':
+            print('I only know how to deal with humans at the moment, sorry.')
+            return
+
         self.playerTile, self.computerTile = self.enterPlayerTile()
         turn = self.whoGoesFirst()
         print("The " + turn + " will go first.")
@@ -332,4 +342,3 @@ class othello:
         )
 
 
-game = othello()
