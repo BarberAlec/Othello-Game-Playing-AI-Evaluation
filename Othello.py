@@ -89,13 +89,8 @@ class othello:
         self.turn = 0
 
     def startgame(self, bot=ai()):
-        if bot.name == "base_ai":
-            print("Welcome base ai I am treating you like a human.")
-        elif bot.name == "human":
-            print("Welcome human.")
-        else:
-            print("I only know how to deal with humans at the moment, sorry.")
-            return
+        # Welcome message for bot, comment out line if you want to surpress terminal outputs
+        self.welcomeMessage(bot)
 
         # We will always be X, random player starts
         self.playerTile, self.computerTile = ["X", "O"]
@@ -103,23 +98,21 @@ class othello:
 
         while True:
             if self.turn == "ai":
-                # AI
+                # BOT turn
+                # Comment these out to surpress output
                 self.drawBoard(self.mainBoard)
-
                 self.showPoints(self.playerTile, self.computerTile, self.mainBoard)
+
                 # This is the only call to the bot :)
                 move = bot.getPlayerMove(self.mainBoard, self.playerTile)
 
                 if move == "quit":
-                    print("Thanks for playing!")
                     return
-
                 else:
                     self.makeMove(self.mainBoard, self.playerTile, move[0], move[1])
 
                 if self.getValidMoves(self.mainBoard, self.computerTile) == []:
                     break
-
                 else:
                     self.turn = "rule_ai"
 
@@ -127,7 +120,7 @@ class othello:
                 # Computer's turn.
                 self.drawBoard(self.mainBoard)
                 self.showPoints(self.playerTile, self.computerTile, self.mainBoard)
-                input("Press Enter to see the computer's move.")
+
                 x, y = self.getComputerMove(self.mainBoard, self.computerTile)
                 self.makeMove(self.mainBoard, self.computerTile, x, y)
                 if self.getValidMoves(self.mainBoard, self.playerTile) == []:
@@ -137,6 +130,15 @@ class othello:
 
         # Game finished, show results
         self.displayResults()
+
+    def welcomeMessage(self, bot):
+        if bot.name == "base_ai":
+            print("Welcome base ai I am treating you like a human.")
+        elif bot.name == "human":
+            print("Welcome human.")
+        else:
+            print("I only know how to deal with humans at the moment, sorry.")
+            return
 
     def displayResults(self):
         self.drawBoard(self.mainBoard)
