@@ -79,7 +79,7 @@ class othello:
                 return False
             return tilesToFlip
 
-        def getPlayerMove(self, board, playerTile):
+        def getMove(self, board, playerTile):
             print("WARNING: this is the base ai class, use a custom class please.")
             return
 
@@ -104,7 +104,7 @@ class othello:
                 self.showPoints(self.playerTile, self.computerTile, self.mainBoard)
 
                 # This is the only call to the bot :)
-                move = bot.getPlayerMove(self.mainBoard, self.playerTile)
+                move = bot.getMove(self.mainBoard, self.playerTile)
 
                 if move == "quit":
                     return

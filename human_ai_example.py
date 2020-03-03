@@ -4,8 +4,8 @@ from Othello import othello
 class human_ai(othello.ai):
     def __init__(self):
         self.name = "human"
-        
-    def getPlayerMove(self, board, playerTile):
+
+    def getMove(self, board, playerTile):
         # Let the player type in their move.
         # Returns the move as [x, y] (or returns the string 'quit')
         DIGITS1TO8 = "1 2 3 4 5 6 7 8".split()
