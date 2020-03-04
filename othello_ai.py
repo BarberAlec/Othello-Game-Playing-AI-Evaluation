@@ -1,9 +1,11 @@
 from Othello import othello
+import random
 '''
 Functions othello.ai provide:
 
     getCurrentScore(self, board): returns dict of 'X' and 'O' with scores
     isValidMove(self, board, tile, xstart, ystart): returns bool for move legality.
+    duplicateBoard(self, board): return copy of board
 
 Contact Alec if other funcitionality is required.
 '''
@@ -35,6 +37,30 @@ class human_ai(othello.ai):
                 )
                 print("For example, 81 will be the top-right corner.")
         return [x, y]
+
+class decisionRule_ai(othello.ai):
+    def __init__(self,marker):
+        self.name = "decison_rule"
+        self.marker = marker
+
+    def getMove(self, board, playerTile):
+        possibleMoves = self.getLegalMoves(board, self.marker)
+        # randomize possible moves
+        random.shuffle(possibleMoves)
+
+        # Corners are opimial always
+        for x, y in possibleMoves:
+            if self.isOnCorner(x, y):
+                return [x, y]
+
+        # Go through all the possible moves and remember the best scoring move
+        bestScore = -1
+        for x, y in possibleMoves:
+            score = self.peekScore(board,x,y)
+            if score > bestScore:
+                bestMove = [x, y]
+                bestScore = score
+        return bestMove
 
 
 class minimax_ai(othello.ai):

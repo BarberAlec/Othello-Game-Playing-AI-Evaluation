@@ -17,6 +17,36 @@ class othello:
             self.name = "base_ai"
             self.marker = marker
 
+        def peekScore(self, board, x, y):
+            dupeBoard = self._duplicateBoard_(board)
+            self._makeMove_(dupeBoard, self.marker, x, y)
+            score = self.getCurrentScore(dupeBoard)[self.marker]
+            return score
+
+        def _makeMove_(self, board, tile, xstart, ystart):
+            
+            tilesToFlip = self.isValidMove(board, tile, xstart, ystart)
+            if tilesToFlip == False:
+                return False
+
+            board[xstart][ystart] = tile
+            for x, y in tilesToFlip:
+                board[x][y] = tile
+            return True
+
+        def _duplicateBoard_(self, board):
+            b = [x[:] for x in board]
+            return b
+
+        def isOnCorner(self, x, y):
+            # Returns True if the position is in one of the four corners.
+            return (
+                (x == 0 and y == 0)
+                or (x == 7 and y == 0)
+                or (x == 0 and y == 7)
+                or (x == 7 and y == 7)
+            )
+
         def getCurrentScore(self, board):
             # Determine the score by counting the tiles. Returns a dictionary with keys 'X' and 'O'.
             xscore = 0
@@ -113,30 +143,30 @@ class othello:
         self.turn = 0
         self.computerTile = ''
 
-    def startgame(self, bot=ai('X')):
-        # Welcome message for bot, comment out line if you want to surpress terminal outputs
-        self.welcomeMessage(bot)
+    def startgame(self, bot1=ai('X')):
+        # Welcome message for bot1, comment out line if you want to surpress terminal outputs
+        self.welcomeMessage(bot1)
 
         # We will always be X, random player starts
-        if bot.marker == 'X':
+        if bot1.marker == 'X':
             self.computerTile = 'O'
         else:
             self.computerTile = 'X'
 
         while True:
             if self.turn == "ai":
-                # BOT turn
+                # bot1 turn
                 # Comment these out to surpress output
                 self.drawBoard(self.mainBoard)
-                self.showPoints(bot.marker, self.computerTile, self.mainBoard)
+                self.showPoints(bot1.marker, self.computerTile, self.mainBoard)
 
-                # This is the only call to the bot :)
-                move = bot.getMove(self.mainBoard, bot.marker)
+                # This is the only call to the bot1 :)
+                move = bot1.getMove(self.mainBoard, bot1.marker)
 
                 if move == "quit":
                     return
                 else:
-                    self.makeMove(self.mainBoard, bot.marker, move[0], move[1])
+                    self.makeMove(self.mainBoard, bot1.marker, move[0], move[1])
 
                 if self.getValidMoves(self.mainBoard, self.computerTile) == []:
                     break
@@ -146,17 +176,17 @@ class othello:
             else:
                 # Computer's turn.
                 self.drawBoard(self.mainBoard)
-                self.showPoints(bot.marker, self.computerTile, self.mainBoard)
+                self.showPoints(bot1.marker, self.computerTile, self.mainBoard)
 
                 x, y = self.getComputerMove(self.mainBoard, self.computerTile)
                 self.makeMove(self.mainBoard, self.computerTile, x, y)
-                if self.getValidMoves(self.mainBoard, bot.marker) == []:
+                if self.getValidMoves(self.mainBoard, bot1.marker) == []:
                     break
                 else:
                     self.turn = "ai"
 
         # Game finished, show results
-        self.displayResults(bot)
+        self.displayResults(bot1)
 
     def welcomeMessage(self, bot):
         if bot.name == "base_ai":
@@ -321,13 +351,9 @@ class othello:
             board[x][y] = tile
         return True
 
-    def getBoardCopy(self, board):
-        # Make a duplicate of the board list and return the duplicate.
-        dupeBoard = self.getNewBoard()
-        for x in range(8):
-            for y in range(8):
-                dupeBoard[x][y] = board[x][y]
-        return dupeBoard
+    def duplicateBoard(self, board):
+        b = [x[:] for x in board]
+        return b
 
     def isOnCorner(self, x, y):
         # Returns True if the position is in one of the four corners.
@@ -352,7 +378,7 @@ class othello:
         # Go through all the possible moves and remember the best scoring move
         bestScore = -1
         for x, y in possibleMoves:
-            dupeBoard = self.getBoardCopy(board)
+            dupeBoard = self.duplicateBoard(board)
             self.makeMove(dupeBoard, computerTile, x, y)
             score = self.getScoreOfBoard(dupeBoard)[computerTile]
             if score > bestScore:
