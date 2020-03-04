@@ -1,7 +1,7 @@
 import random
 import numpy as np
 
-# TODO: replace python 2d lists with numpy arrays
+# TODO: Create evaluation structure
 # TODO: Implement random game start option
 
 
@@ -23,7 +23,7 @@ class othello:
         def peekScore(self, board, x, y):
             dupeBoard = self._duplicateBoard_(board)
             self._makeMove_(dupeBoard, self.marker, x, y)
-            score = self.getCurrentScore(dupeBoard)[self.marker]
+            score = self.getCurrentScore(dupeBoard)[str(self.marker)]
             return score
 
         def _makeMove_(self, board, tile, xstart, ystart):
@@ -56,13 +56,13 @@ class othello:
             oscore = 0
             for x in range(8):
                 for y in range(8):
-                    if board[x,y] == "X":
+                    if board[x,y] == "1":
                         xscore += 1
 
-                    if board[x,y] == "O":
+                    if board[x,y] == "-1":
                         oscore += 1
 
-            return {"X": xscore, "O": oscore}
+            return {"1": xscore, "-1": oscore}
 
         def _isOnBoard_(self, x, y):
             return x >= 0 and x <= 7 and y >= 0 and y <= 7
@@ -70,14 +70,14 @@ class othello:
         def isValidMove(self, board, tile, xstart, ystart):
             # Returns False if the player's move on space xstart, ystart is invalid.
             # If it is a valid move, returns a list of spaces that would become the player's if they made a move here.
-            if board[xstart,ystart] != " " or not self._isOnBoard_(xstart, ystart):
+            if board[xstart,ystart] != 0 or not self._isOnBoard_(xstart, ystart):
                 return False
 
             board[xstart,ystart] = tile  # temporarily set the tile on the board.
-            if tile == "X":
-                otherTile = "O"
+            if tile == 1:
+                otherTile = -1
             else:
-                otherTile = "X"
+                otherTile = 1
             tilesToFlip = []
             for xdirection, ydirection in [
                 [0, 1],
@@ -120,7 +120,7 @@ class othello:
                                 break
                             tilesToFlip.append([x, y])
 
-            board[xstart,ystart] = " "  # restore the empty space
+            board[xstart,ystart] = 0  # restore the empty space
             if (
                 len(tilesToFlip) == 0
             ):  # If no tiles were flipped, this is not a valid move.
@@ -150,7 +150,7 @@ class othello:
             print("Bots not compatiable: Fatal error")
             return
 
-    def startgame(self):
+    def startgame(self,start_move=0):
         # Welcome message for bots, comment out lines if you want to surpress terminal outputs
         self.welcomeMessage(self.bot1)
         self.welcomeMessage(self.bot2)
@@ -208,16 +208,16 @@ class othello:
     def displayResults(self, bot):
         self.drawBoard(self.mainBoard)
         scores = self.getScoreOfBoard(self.mainBoard)
-        print("X scored %s points. O scored %s points." % (scores["X"], scores["O"]))
-        if scores[bot.marker] > scores[self.bot2.marker]:
+        print("X scored %s points. O scored %s points." % (scores["1"], scores["-1"]))
+        if scores[str(bot.marker)] > scores[str(self.bot2.marker)]:
             print(
                 "You beat the computer by %s points! Congratulations!"
-                % (scores[bot.marker] - scores[self.bot2.marker])
+                % (scores[str(bot.marker)] - scores[str(self.bot2.marker)])
             )
-        elif scores[bot.marker] < scores[self.bot2.marker]:
+        elif scores[str(bot.marker)] < scores[str(self.bot2.marker)]:
             print(
                 "You lost. The computer beat you by %s points."
-                % (scores[self.bot2.marker] - scores[bot.marker])
+                % (scores[str(self.bot2.marker)] - scores[str(bot.marker)])
             )
         else:
             print("The game was a tie!")
@@ -233,7 +233,10 @@ class othello:
             print(VLINE)
             print(y + 1, end=" ")
             for x in range(8):
-                print("| %s" % (board[x,y]), end=" ")
+                if board[x,y] == 0:
+                    print("|  ", end=" ")
+                else:
+                    print("| %d" % (board[x,y]+2), end=" ")
             print("|")
             print(VLINE)
             print(HLINE)
@@ -242,16 +245,16 @@ class othello:
         # Blanks out the board it is passed, except for the original starting position.
         for x in range(8):
             for y in range(8):
-                board[x,y] = " "
+                board[x,y] = 0
                 # Starting pieces:
-                board[3,3] = "X"
-                board[3,4] = "O"
-                board[4,3] = "O"
-                board[4,4] = "X"
+                board[3,3] = 1
+                board[3,4] = -1
+                board[4,3] = -1
+                board[4,4] = 1
 
     def getNewBoard(self):
         # Creates a brand new, blank board data structure.
-        board = np.empty((8,8),dtype='str')
+        board = np.zeros((8,8))
         # board = []
         # for i in range(8):
         #     board.append([" "] * 8)
@@ -260,14 +263,14 @@ class othello:
     def isValidMove(self, board, tile, xstart, ystart):
         # Returns False if the player's move on space xstart, ystart is invalid.
         # If it is a valid move, returns a list of spaces that would become the player's if they made a move here.
-        if board[xstart,ystart] != " " or not self.isOnBoard(xstart, ystart):
+        if board[xstart,ystart] != 0 or not self.isOnBoard(xstart, ystart):
             return False
 
         board[xstart,ystart] = tile  # temporarily set the tile on the board.
-        if tile == "X":
-            otherTile = "O"
+        if tile == 1:
+            otherTile = -1
         else:
-            otherTile = "X"
+            otherTile = 1
         tilesToFlip = []
         for xdirection, ydirection in [
             [0, 1],
@@ -310,7 +313,7 @@ class othello:
                             break
                         tilesToFlip.append([x, y])
 
-        board[xstart,ystart] = " "  # restore the empty space
+        board[xstart,ystart] = 0  # restore the empty space
         if len(tilesToFlip) == 0:  # If no tiles were flipped, this is not a valid move.
             return False
         return tilesToFlip
@@ -334,13 +337,13 @@ class othello:
         oscore = 0
         for x in range(8):
             for y in range(8):
-                if board[x,y] == "X":
+                if board[x,y] == 1:
                     xscore += 1
 
-                if board[x,y] == "O":
+                if board[x,y] == -1:
                     oscore += 1
 
-        return {"X": xscore, "O": oscore}
+        return {"1": xscore, "-1": oscore}
 
     def firstTurn(self):
         # Who plays first
@@ -389,7 +392,7 @@ class othello:
         for x, y in possibleMoves:
             dupeBoard = self.duplicateBoard(board)
             self.makeMove(dupeBoard, computerTile, x, y)
-            score = self.getScoreOfBoard(dupeBoard)[computerTile]
+            score = self.getScoreOfBoard(dupeBoard)[str(computerTile)]
             if score > bestScore:
                 bestMove = [x, y]
             bestScore = score
@@ -399,7 +402,7 @@ class othello:
         # Prints out the current score.
         scores = self.getScoreOfBoard(mainBoard)
         print(
-            "You have %s points. The computer has %s points."
-            % (scores[self.bot1.marker], scores[self.bot2.marker])
+            "You have %d points. The computer has %d points."
+            % (scores[str(self.bot1.marker)], scores[str(self.bot2.marker)])
         )
 
