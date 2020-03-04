@@ -3,9 +3,13 @@ import random
 '''
 Functions othello.ai provide:
 
-    getCurrentScore(self, board): returns dict of 'X' and 'O' with scores
+    getCurrentScore(self, board): returns dict of 'X' and 'O' with scores.
+    peekScore(self,board,x,y): returns score of board after taking given move.
+
     isValidMove(self, board, tile, xstart, ystart): returns bool for move legality.
-    duplicateBoard(self, board): return copy of board
+    getLegalMoves(self, board, tile): reutrns list of legal moves.
+
+    isOnCorner(self, x, y): returns True if is corner position.
 
 Contact Alec if other funcitionality is required.
 '''

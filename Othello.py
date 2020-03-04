@@ -1,6 +1,8 @@
 import random
 import numpy as np
-
+#TODO: replace python 2d lists with numpy arrays
+#TODO: make bot2 a customisable ai
+#TODO: Implement random game start option
 
 class othello:
     """
@@ -61,13 +63,13 @@ class othello:
 
             return {"X": xscore, "O": oscore}
 
-        def isOnBoard(self, x, y):
+        def _isOnBoard_(self, x, y):
             return x >= 0 and x <= 7 and y >= 0 and y <= 7
 
         def isValidMove(self, board, tile, xstart, ystart):
             # Returns False if the player's move on space xstart, ystart is invalid.
             # If it is a valid move, returns a list of spaces that would become the player's if they made a move here.
-            if board[xstart][ystart] != " " or not self.isOnBoard(xstart, ystart):
+            if board[xstart][ystart] != " " or not self._isOnBoard_(xstart, ystart):
                 return False
 
             board[xstart][ystart] = tile  # temporarily set the tile on the board.
@@ -89,23 +91,23 @@ class othello:
                 x, y = xstart, ystart
                 x += xdirection  # first step in the direction
                 y += ydirection  # first step in the direction
-                if self.isOnBoard(x, y) and board[x][y] == otherTile:
+                if self._isOnBoard_(x, y) and board[x][y] == otherTile:
                     # There is a piece belonging to the other player next to our piece.
                     x += xdirection
                     y += ydirection
-                    if not self.isOnBoard(x, y):
+                    if not self._isOnBoard_(x, y):
                         continue
 
                     while board[x][y] == otherTile:
                         x += xdirection
                         y += ydirection
 
-                        if not self.isOnBoard(
+                        if not self._isOnBoard_(
                             x, y
                         ):  # break out of while loop, then continue in for loop
                             break
 
-                    if not self.isOnBoard(x, y):
+                    if not self._isOnBoard_(x, y):
                         continue
 
                     if board[x][y] == tile:
@@ -187,6 +189,7 @@ class othello:
 
         # Game finished, show results
         self.displayResults(bot1)
+        return self.getScoreOfBoard(self.mainBoard)
 
     def welcomeMessage(self, bot):
         if bot.name == "base_ai":
