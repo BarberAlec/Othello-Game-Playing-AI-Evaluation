@@ -1,6 +1,7 @@
 from Othello import othello
 import random
-'''
+
+"""
 Functions othello.ai provide:
 
     getCurrentScore(self, board): returns dict of 'X' and 'O' with scores.
@@ -12,16 +13,15 @@ Functions othello.ai provide:
     isOnCorner(self, x, y): returns True if is corner position.
 
 Contact Alec if other funcitionality is required.
-'''
-
+"""
 
 
 class human_ai(othello.ai):
-    def __init__(self,marker):
+    def __init__(self, marker):
         self.name = "human"
         self.marker = marker
 
-    def getMove(self, board, playerTile):
+    def getMove(self, board):
         DIGITS1TO8 = "1 2 3 4 5 6 7 8".split()
         while True:
             print("Enter your move, or quit")
@@ -31,7 +31,7 @@ class human_ai(othello.ai):
             if len(move) == 2 and move[0] in DIGITS1TO8 and move[1] in DIGITS1TO8:
                 x = int(move[0]) - 1
                 y = int(move[1]) - 1
-                if self.isValidMove(board, playerTile, x, y) == False:
+                if self.isValidMove(board, self.marker, x, y) == False:
                     continue
                 else:
                     break
@@ -42,12 +42,13 @@ class human_ai(othello.ai):
                 print("For example, 81 will be the top-right corner.")
         return [x, y]
 
+
 class decisionRule_ai(othello.ai):
-    def __init__(self,marker):
+    def __init__(self, marker):
         self.name = "decison_rule"
         self.marker = marker
 
-    def getMove(self, board, playerTile):
+    def getMove(self, board):
         possibleMoves = self.getLegalMoves(board, self.marker)
         # randomize possible moves
         random.shuffle(possibleMoves)
@@ -60,7 +61,7 @@ class decisionRule_ai(othello.ai):
         # Go through all the possible moves and remember the best scoring move
         bestScore = -1
         for x, y in possibleMoves:
-            score = self.peekScore(board,x,y)
+            score = self.peekScore(board, x, y)
             if score > bestScore:
                 bestMove = [x, y]
                 bestScore = score
@@ -68,21 +69,21 @@ class decisionRule_ai(othello.ai):
 
 
 class minimax_ai(othello.ai):
-    def __init__(self,marker):
+    def __init__(self, marker):
         self.name = "minimax"
 
-    def getMove(self, board, playerTile):
+    def getMove(self, board):
         x = 0
         y = 0
         return [x, y]
 
 
 class NN_ai(othello.ai):
-    def __init__(self,marker):
+    def __init__(self, marker):
         self.name = "NN"
         self.marker = marker
 
-    def getMove(self, board, playerTile):
+    def getMove(self, board):
         x = 0
         y = 0
         return [x, y]

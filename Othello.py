@@ -1,8 +1,10 @@
 import random
 import numpy as np
-#TODO: replace python 2d lists with numpy arrays
-#TODO: make bot2 a customisable ai
-#TODO: Implement random game start option
+
+# TODO: replace python 2d lists with numpy arrays
+# TODO: make bot2 a customisable ai
+# TODO: Implement random game start option
+
 
 class othello:
     """
@@ -15,7 +17,7 @@ class othello:
         To create a new ai, make a child class :)
         """
 
-        def __init__(self,marker):
+        def __init__(self, marker):
             self.name = "base_ai"
             self.marker = marker
 
@@ -26,7 +28,7 @@ class othello:
             return score
 
         def _makeMove_(self, board, tile, xstart, ystart):
-            
+
             tilesToFlip = self.isValidMove(board, tile, xstart, ystart)
             if tilesToFlip == False:
                 return False
@@ -135,61 +137,65 @@ class othello:
                         validMoves.append([x, y])
             return validMoves
 
-        def getMove(self, board, playerTile):
+        def getMove(self, board):
             print("WARNING: this is the base ai class, use a custom class please.")
             return
 
-    def __init__(self):
+    def __init__(self, bot1=ai("X"), bot2=ai("O")):
         self.mainBoard = self.getNewBoard()
         self.resetBoard(self.mainBoard)
-        self.turn = 0
-        self.computerTile = ''
+        self.turn = self.firstTurn()
+        self.bot1 = bot1
+        self.bot2 = bot2
+        if not self.checkBotLegality(self.bot1, self.bot2):
+            print("Bots not compatiable: Fatal error")
+            return
 
-    def startgame(self, bot1=ai('X')):
-        # Welcome message for bot1, comment out line if you want to surpress terminal outputs
-        self.welcomeMessage(bot1)
-
-        # We will always be X, random player starts
-        if bot1.marker == 'X':
-            self.computerTile = 'O'
-        else:
-            self.computerTile = 'X'
+    def startgame(self):
+        # Welcome message for bots, comment out lines if you want to surpress terminal outputs
+        self.welcomeMessage(self.bot1)
+        self.welcomeMessage(self.bot2)
 
         while True:
-            if self.turn == "ai":
+            if self.turn == "bot1":
                 # bot1 turn
                 # Comment these out to surpress output
                 self.drawBoard(self.mainBoard)
-                self.showPoints(bot1.marker, self.computerTile, self.mainBoard)
+                self.showPoints(self.mainBoard)
 
                 # This is the only call to the bot1 :)
-                move = bot1.getMove(self.mainBoard, bot1.marker)
+                move = self.bot1.getMove(self.mainBoard)
 
                 if move == "quit":
                     return
                 else:
-                    self.makeMove(self.mainBoard, bot1.marker, move[0], move[1])
+                    self.makeMove(self.mainBoard, self.bot1.marker, move[0], move[1])
 
-                if self.getValidMoves(self.mainBoard, self.computerTile) == []:
+                if self.getValidMoves(self.mainBoard, self.bot2.marker) == []:
                     break
                 else:
-                    self.turn = "rule_ai"
+                    self.turn = "bot2"
 
             else:
                 # Computer's turn.
                 self.drawBoard(self.mainBoard)
-                self.showPoints(bot1.marker, self.computerTile, self.mainBoard)
+                self.showPoints(self.mainBoard)
 
-                x, y = self.getComputerMove(self.mainBoard, self.computerTile)
-                self.makeMove(self.mainBoard, self.computerTile, x, y)
-                if self.getValidMoves(self.mainBoard, bot1.marker) == []:
+                move = self.bot2.getMove(self.mainBoard)
+                self.makeMove(self.mainBoard, self.bot2.marker, move[0], move[1])
+                if self.getValidMoves(self.mainBoard, self.bot1.marker) == []:
                     break
                 else:
-                    self.turn = "ai"
+                    self.turn = "bot1"
 
         # Game finished, show results
-        self.displayResults(bot1)
+        self.displayResults(self.bot1)
         return self.getScoreOfBoard(self.mainBoard)
+
+    def checkBotLegality(self, bot1, bot2):
+        if bot1.marker == self.bot2.marker:
+            return False
+        return True
 
     def welcomeMessage(self, bot):
         if bot.name == "base_ai":
@@ -200,19 +206,19 @@ class othello:
             print("I only know how to deal with humans at the moment, sorry.")
             return
 
-    def displayResults(self,bot):
+    def displayResults(self, bot):
         self.drawBoard(self.mainBoard)
         scores = self.getScoreOfBoard(self.mainBoard)
         print("X scored %s points. O scored %s points." % (scores["X"], scores["O"]))
-        if scores[bot.marker] > scores[self.computerTile]:
+        if scores[bot.marker] > scores[self.bot2.marker]:
             print(
                 "You beat the computer by %s points! Congratulations!"
-                % (scores[bot.marker] - scores[self.computerTile])
+                % (scores[bot.marker] - scores[self.bot2.marker])
             )
-        elif scores[bot.marker] < scores[self.computerTile]:
+        elif scores[bot.marker] < scores[self.bot2.marker]:
             print(
                 "You lost. The computer beat you by %s points."
-                % (scores[self.computerTile] - scores[bot.marker])
+                % (scores[self.bot2.marker] - scores[bot.marker])
             )
         else:
             print("The game was a tie!")
@@ -339,8 +345,8 @@ class othello:
     def firstTurn(self):
         # Who plays first
         if random.randint(0, 1) == 0:
-            return "rule_ai"
-        return "ai"
+            return "bot1"
+        return "bot2"
 
     def makeMove(self, board, tile, xstart, ystart):
         # Place the tile on the board at xstart, ystart, and flip any of the opponent's pieces.
@@ -389,11 +395,11 @@ class othello:
             bestScore = score
         return bestMove
 
-    def showPoints(self, playerTile, computerTile, mainBoard):
+    def showPoints(self, mainBoard):
         # Prints out the current score.
         scores = self.getScoreOfBoard(mainBoard)
         print(
             "You have %s points. The computer has %s points."
-            % (scores[playerTile], scores[computerTile])
+            % (scores[self.bot1.marker], scores[self.bot2.marker])
         )
 
