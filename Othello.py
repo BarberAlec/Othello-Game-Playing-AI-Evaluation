@@ -13,8 +13,9 @@ class othello:
         To create a new ai, make a child class :)
         """
 
-        def __init__(self):
+        def __init__(self,marker):
             self.name = "base_ai"
+            self.marker = marker
 
         def getCurrentScore(self, board):
             # Determine the score by counting the tiles. Returns a dictionary with keys 'X' and 'O'.
@@ -93,6 +94,15 @@ class othello:
                 return False
             return tilesToFlip
 
+        def getLegalMoves(self, board, tile):
+            # Returns a list of [x,y] lists of valid moves for the given player on the given board.
+            validMoves = []
+            for x in range(8):
+                for y in range(8):
+                    if self.isValidMove(board, tile, x, y) != False:
+                        validMoves.append([x, y])
+            return validMoves
+
         def getMove(self, board, playerTile):
             print("WARNING: this is the base ai class, use a custom class please.")
             return
@@ -101,29 +111,32 @@ class othello:
         self.mainBoard = self.getNewBoard()
         self.resetBoard(self.mainBoard)
         self.turn = 0
+        self.computerTile = ''
 
-    def startgame(self, bot=ai()):
+    def startgame(self, bot=ai('X')):
         # Welcome message for bot, comment out line if you want to surpress terminal outputs
         self.welcomeMessage(bot)
 
         # We will always be X, random player starts
-        self.playerTile, self.computerTile = ["X", "O"]
-        self.turn = self.firstTurn()
+        if bot.marker == 'X':
+            self.computerTile = 'O'
+        else:
+            self.computerTile = 'X'
 
         while True:
             if self.turn == "ai":
                 # BOT turn
                 # Comment these out to surpress output
                 self.drawBoard(self.mainBoard)
-                self.showPoints(self.playerTile, self.computerTile, self.mainBoard)
+                self.showPoints(bot.marker, self.computerTile, self.mainBoard)
 
                 # This is the only call to the bot :)
-                move = bot.getMove(self.mainBoard, self.playerTile)
+                move = bot.getMove(self.mainBoard, bot.marker)
 
                 if move == "quit":
                     return
                 else:
-                    self.makeMove(self.mainBoard, self.playerTile, move[0], move[1])
+                    self.makeMove(self.mainBoard, bot.marker, move[0], move[1])
 
                 if self.getValidMoves(self.mainBoard, self.computerTile) == []:
                     break
@@ -133,17 +146,17 @@ class othello:
             else:
                 # Computer's turn.
                 self.drawBoard(self.mainBoard)
-                self.showPoints(self.playerTile, self.computerTile, self.mainBoard)
+                self.showPoints(bot.marker, self.computerTile, self.mainBoard)
 
                 x, y = self.getComputerMove(self.mainBoard, self.computerTile)
                 self.makeMove(self.mainBoard, self.computerTile, x, y)
-                if self.getValidMoves(self.mainBoard, self.playerTile) == []:
+                if self.getValidMoves(self.mainBoard, bot.marker) == []:
                     break
                 else:
                     self.turn = "ai"
 
         # Game finished, show results
-        self.displayResults()
+        self.displayResults(bot)
 
     def welcomeMessage(self, bot):
         if bot.name == "base_ai":
@@ -154,19 +167,19 @@ class othello:
             print("I only know how to deal with humans at the moment, sorry.")
             return
 
-    def displayResults(self):
+    def displayResults(self,bot):
         self.drawBoard(self.mainBoard)
         scores = self.getScoreOfBoard(self.mainBoard)
         print("X scored %s points. O scored %s points." % (scores["X"], scores["O"]))
-        if scores[self.playerTile] > scores[self.computerTile]:
+        if scores[bot.marker] > scores[self.computerTile]:
             print(
                 "You beat the computer by %s points! Congratulations!"
-                % (scores[self.playerTile] - scores[self.computerTile])
+                % (scores[bot.marker] - scores[self.computerTile])
             )
-        elif scores[self.playerTile] < scores[self.computerTile]:
+        elif scores[bot.marker] < scores[self.computerTile]:
             print(
                 "You lost. The computer beat you by %s points."
-                % (scores[self.computerTile] - scores[self.playerTile])
+                % (scores[self.computerTile] - scores[bot.marker])
             )
         else:
             print("The game was a tie!")

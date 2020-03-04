@@ -11,8 +11,9 @@ Contact Alec if other funcitionality is required.
 
 
 class human_ai(othello.ai):
-    def __init__(self):
+    def __init__(self,marker):
         self.name = "human"
+        self.marker = marker
 
     def getMove(self, board, playerTile):
         DIGITS1TO8 = "1 2 3 4 5 6 7 8".split()
@@ -37,7 +38,7 @@ class human_ai(othello.ai):
 
 
 class minimax_ai(othello.ai):
-    def __init__(self):
+    def __init__(self,marker):
         self.name = "minimax"
 
     def getMove(self, board, playerTile):
@@ -47,8 +48,9 @@ class minimax_ai(othello.ai):
 
 
 class NN_ai(othello.ai):
-    def __init__(self):
+    def __init__(self,marker):
         self.name = "NN"
+        self.marker = marker
 
     def getMove(self, board, playerTile):
         x = 0
