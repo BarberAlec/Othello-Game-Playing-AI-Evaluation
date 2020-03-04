@@ -29,6 +29,7 @@ class minimax_ai(othello.ai):
         x = 0
         y = 0
         self.cornerweight(board)
+        self.get_cost(board)
         return self.getLegalMoves(board, self.marker)[0]
 
     def cornerweight(self,board):
@@ -40,9 +41,20 @@ class minimax_ai(othello.ai):
             total += WEIGHTS[x+1][y+1]
             print(x,y)
         return total
-            
 
-            
+    def get_cost(self,board):
+        p1_pieces = np.where(board == self.marker)
+        empty = np.where(board == 0)
+        p2_pieces = 64 - len(p1_pieces[0]) - len(empty[0])      
+        cost = len(p1_pieces[0]) - p2_pieces
+
+        print("Empty pieces: ",len(empty[0]))
+        print("My pieces: ",len(p1_pieces[0]))
+        print("Opponent pieces: ",p2_pieces)
+        print(cost)
+
+        return cost
+
 
 
 # Weight Heatmap - corner strategy weights
@@ -61,7 +73,7 @@ WEIGHTS = [[4, -3, 2, 2, 2, 2, -3, 4,],
 # plt.show()
 
 # Create new instance of othello game with spefied ai players
-game = othello(minimax_ai("X"), human_ai("O"))
+game = othello(minimax_ai(1), human_ai(-1))
 
 # Begin game
 score = game.startgame()
