@@ -16,6 +16,20 @@ class othello:
         def __init__(self):
             self.name = "base_ai"
 
+        def getCurrentScore(self, board):
+            # Determine the score by counting the tiles. Returns a dictionary with keys 'X' and 'O'.
+            xscore = 0
+            oscore = 0
+            for x in range(8):
+                for y in range(8):
+                    if board[x][y] == "X":
+                        xscore += 1
+
+                    if board[x][y] == "O":
+                        oscore += 1
+
+            return {"X": xscore, "O": oscore}
+
         def isOnBoard(self, x, y):
             return x >= 0 and x <= 7 and y >= 0 and y <= 7
 

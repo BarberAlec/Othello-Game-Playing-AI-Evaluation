@@ -25,3 +25,13 @@ class human_ai(othello.ai):
                 )
                 print("For example, 81 will be the top-right corner.")
         return [x, y]
+
+
+class minimax_ai(othello.ai):
+    def __init__(self):
+        self.name = "minimax"
+
+    def getMove(self, board, playerTile):
+        x = 0
+        y = 0
+        return [x, y]
