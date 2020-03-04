@@ -1,4 +1,13 @@
 from Othello import othello
+'''
+Functions othello.ai provide:
+
+    getCurrentScore(self, board): returns dict of 'X' and 'O' with scores
+    isValidMove(self, board, tile, xstart, ystart): returns bool for move legality.
+
+Contact Alec if other funcitionality is required.
+'''
+
 
 
 class human_ai(othello.ai):
@@ -30,6 +39,16 @@ class human_ai(othello.ai):
 class minimax_ai(othello.ai):
     def __init__(self):
         self.name = "minimax"
+
+    def getMove(self, board, playerTile):
+        x = 0
+        y = 0
+        return [x, y]
+
+
+class NN_ai(othello.ai):
+    def __init__(self):
+        self.name = "NN"
 
     def getMove(self, board, playerTile):
         x = 0
