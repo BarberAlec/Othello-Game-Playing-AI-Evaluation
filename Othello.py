@@ -32,9 +32,9 @@ class othello:
             if tilesToFlip == False:
                 return False
 
-            board[xstart,ystart] = tile
+            board[xstart, ystart] = tile
             for x, y in tilesToFlip:
-                board[x,y] = tile
+                board[x, y] = tile
             return True
 
         def _duplicateBoard_(self, board):
@@ -56,10 +56,10 @@ class othello:
             oscore = 0
             for x in range(8):
                 for y in range(8):
-                    if board[x,y] == "1":
+                    if board[x, y] == "1":
                         xscore += 1
 
-                    if board[x,y] == "-1":
+                    if board[x, y] == "-1":
                         oscore += 1
 
             return {"1": xscore, "-1": oscore}
@@ -70,10 +70,10 @@ class othello:
         def isValidMove(self, board, tile, xstart, ystart):
             # Returns False if the player's move on space xstart, ystart is invalid.
             # If it is a valid move, returns a list of spaces that would become the player's if they made a move here.
-            if board[xstart,ystart] != 0 or not self._isOnBoard_(xstart, ystart):
+            if board[xstart, ystart] != 0 or not self._isOnBoard_(xstart, ystart):
                 return False
 
-            board[xstart,ystart] = tile  # temporarily set the tile on the board.
+            board[xstart, ystart] = tile  # temporarily set the tile on the board.
             if tile == 1:
                 otherTile = -1
             else:
@@ -92,14 +92,14 @@ class othello:
                 x, y = xstart, ystart
                 x += xdirection  # first step in the direction
                 y += ydirection  # first step in the direction
-                if self._isOnBoard_(x, y) and board[x,y] == otherTile:
+                if self._isOnBoard_(x, y) and board[x, y] == otherTile:
                     # There is a piece belonging to the other player next to our piece.
                     x += xdirection
                     y += ydirection
                     if not self._isOnBoard_(x, y):
                         continue
 
-                    while board[x,y] == otherTile:
+                    while board[x, y] == otherTile:
                         x += xdirection
                         y += ydirection
 
@@ -111,7 +111,7 @@ class othello:
                     if not self._isOnBoard_(x, y):
                         continue
 
-                    if board[x,y] == tile:
+                    if board[x, y] == tile:
                         # There are pieces to flip over. Go in the reverse direction until we reach the original space, noting all the tiles along the way.
                         while True:
                             x -= xdirection
@@ -120,7 +120,7 @@ class othello:
                                 break
                             tilesToFlip.append([x, y])
 
-            board[xstart,ystart] = 0  # restore the empty space
+            board[xstart, ystart] = 0  # restore the empty space
             if (
                 len(tilesToFlip) == 0
             ):  # If no tiles were flipped, this is not a valid move.
@@ -140,56 +140,55 @@ class othello:
             print("WARNING: this is the base ai class, use a custom class please.")
             return
 
-    def __init__(self, bot1=ai("X"), bot2=ai("O")):
+    def __init__(self, bot1=ai("X"), bot2=ai("O"), verbose=True):
         self.mainBoard = self.getNewBoard()
         self.resetBoard(self.mainBoard)
-        self.turn = self.firstTurn()
+        self.verbose = verbose
         self.bot1 = bot1
         self.bot2 = bot2
         if not self.checkBotLegality(self.bot1, self.bot2):
             print("Bots not compatiable: Fatal error")
             return
 
-    def startgame(self,start_move=0):
+    def startgame(self, start_move=0):
         # Welcome message for bots, comment out lines if you want to surpress terminal outputs
-        self.welcomeMessage(self.bot1)
-        self.welcomeMessage(self.bot2)
+        if self.verbose:
+            self.welcomeMessage(self.bot1)
+            self.welcomeMessage(self.bot2)
 
         while True:
-            if self.turn == "bot1":
-                # bot1 turn
-                # Comment these out to surpress output
-                self.drawBoard(self.mainBoard)
-                self.showPoints(self.mainBoard)
+            turn_state = self.takeTurn(self.bot1,self.bot2, verbose=self.verbose)
+            if turn_state == 1:
+                return
+            elif turn_state == -1:
+                break
 
-                # This is the only call to the bot1 :)
-                move = self.bot1.getMove(self.mainBoard)
-
-                if move == "quit":
-                    return
-                else:
-                    self.makeMove(self.mainBoard, self.bot1.marker, move[0], move[1])
-
-                if self.getValidMoves(self.mainBoard, self.bot2.marker) == []:
-                    break
-                else:
-                    self.turn = "bot2"
-
-            else:
-                # Computer's turn.
-                self.drawBoard(self.mainBoard)
-                self.showPoints(self.mainBoard)
-
-                move = self.bot2.getMove(self.mainBoard)
-                self.makeMove(self.mainBoard, self.bot2.marker, move[0], move[1])
-                if self.getValidMoves(self.mainBoard, self.bot1.marker) == []:
-                    break
-                else:
-                    self.turn = "bot1"
+            turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
+            if turn_state == 1:
+                return
+            elif turn_state == -1:
+                break
 
         # Game finished, show results
         self.displayResults(self.bot1)
         return self.getScoreOfBoard(self.mainBoard)
+
+    def takeTurn(self, bot, bot_other, verbose=True):
+        if verbose:
+            self.drawBoard(self.mainBoard)
+            self.showPoints(self.mainBoard)
+
+        move = bot.getMove(self.mainBoard)
+
+        if move == "quit":
+            return 1
+        else:
+            self.makeMove(self.mainBoard, bot.marker, move[0], move[1])
+
+        if self.getValidMoves(self.mainBoard, bot_other.marker) == []:
+            return -1
+        else:
+            return 0
 
     def checkBotLegality(self, bot1, bot2):
         if bot1.marker == self.bot2.marker:
@@ -233,10 +232,10 @@ class othello:
             print(VLINE)
             print(y + 1, end=" ")
             for x in range(8):
-                if board[x,y] == 0:
+                if board[x, y] == 0:
                     print("|  ", end=" ")
                 else:
-                    print("| %d" % (board[x,y]+2), end=" ")
+                    print("| %d" % (board[x, y] + 2), end=" ")
             print("|")
             print(VLINE)
             print(HLINE)
@@ -245,16 +244,16 @@ class othello:
         # Blanks out the board it is passed, except for the original starting position.
         for x in range(8):
             for y in range(8):
-                board[x,y] = 0
+                board[x, y] = 0
                 # Starting pieces:
-                board[3,3] = 1
-                board[3,4] = -1
-                board[4,3] = -1
-                board[4,4] = 1
+                board[3, 3] = 1
+                board[3, 4] = -1
+                board[4, 3] = -1
+                board[4, 4] = 1
 
     def getNewBoard(self):
         # Creates a brand new, blank board data structure.
-        board = np.zeros((8,8))
+        board = np.zeros((8, 8))
         # board = []
         # for i in range(8):
         #     board.append([" "] * 8)
@@ -263,10 +262,10 @@ class othello:
     def isValidMove(self, board, tile, xstart, ystart):
         # Returns False if the player's move on space xstart, ystart is invalid.
         # If it is a valid move, returns a list of spaces that would become the player's if they made a move here.
-        if board[xstart,ystart] != 0 or not self.isOnBoard(xstart, ystart):
+        if board[xstart, ystart] != 0 or not self.isOnBoard(xstart, ystart):
             return False
 
-        board[xstart,ystart] = tile  # temporarily set the tile on the board.
+        board[xstart, ystart] = tile  # temporarily set the tile on the board.
         if tile == 1:
             otherTile = -1
         else:
@@ -285,14 +284,14 @@ class othello:
             x, y = xstart, ystart
             x += xdirection  # first step in the direction
             y += ydirection  # first step in the direction
-            if self.isOnBoard(x, y) and board[x,y] == otherTile:
+            if self.isOnBoard(x, y) and board[x, y] == otherTile:
                 # There is a piece belonging to the other player next to our piece.
                 x += xdirection
                 y += ydirection
                 if not self.isOnBoard(x, y):
                     continue
 
-                while board[x,y] == otherTile:
+                while board[x, y] == otherTile:
                     x += xdirection
                     y += ydirection
 
@@ -304,7 +303,7 @@ class othello:
                 if not self.isOnBoard(x, y):
                     continue
 
-                if board[x,y] == tile:
+                if board[x, y] == tile:
                     # There are pieces to flip over. Go in the reverse direction until we reach the original space, noting all the tiles along the way.
                     while True:
                         x -= xdirection
@@ -313,7 +312,7 @@ class othello:
                             break
                         tilesToFlip.append([x, y])
 
-        board[xstart,ystart] = 0  # restore the empty space
+        board[xstart, ystart] = 0  # restore the empty space
         if len(tilesToFlip) == 0:  # If no tiles were flipped, this is not a valid move.
             return False
         return tilesToFlip
@@ -337,10 +336,10 @@ class othello:
         oscore = 0
         for x in range(8):
             for y in range(8):
-                if board[x,y] == 1:
+                if board[x, y] == 1:
                     xscore += 1
 
-                if board[x,y] == -1:
+                if board[x, y] == -1:
                     oscore += 1
 
         return {"1": xscore, "-1": oscore}
@@ -358,9 +357,9 @@ class othello:
         if tilesToFlip == False:
             return False
 
-        board[xstart,ystart] = tile
+        board[xstart, ystart] = tile
         for x, y in tilesToFlip:
-            board[x,y] = tile
+            board[x, y] = tile
         return True
 
     def duplicateBoard(self, board):
