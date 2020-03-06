@@ -156,6 +156,10 @@ class othello:
             self.welcomeMessage(self.bot1)
             self.welcomeMessage(self.bot2)
 
+        # Randomly initialise board (not implemented)
+        self.mainBoard = self.createRandomBoard(start_move)
+
+        # TODO: reimplement random player start
         while True:
             turn_state = self.takeTurn(self.bot1,self.bot2, verbose=self.verbose)
             if turn_state == 1:
@@ -172,6 +176,10 @@ class othello:
         # Game finished, show results
         self.displayResults(self.bot1)
         return self.getScoreOfBoard(self.mainBoard)
+
+    def createRandomBoard(self,turns_in):
+        # TODO:make
+        return self.mainBoard
 
     def takeTurn(self, bot, bot_other, verbose=True):
         if verbose:
