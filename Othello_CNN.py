@@ -6,7 +6,7 @@ class OthelloCNN(Module):
         super().__init__()
 
         self.conv1 = Sequential(
-            Conv2d(3, 64, kernel_size=3, padding=0, stride=1),
+            Conv2d(2, 64, kernel_size=3, padding=0, stride=1),
             BatchNorm2d(64),
             ReLU() )
 
