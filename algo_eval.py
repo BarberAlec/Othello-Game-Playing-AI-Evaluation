@@ -15,6 +15,6 @@ from ab_pruning_ohtello import minimax_ai
 # Begin game
 # score = game.startgame(start_move=5)
 
-evaluation = othello_eval(minimax_ai(1), decisionRule_ai(-1), runs=500)
+evaluation = othello_eval(minimax_ai(1), decisionRule_ai(-1), runs=1000)
 evaluation.gameStartEval()
 evaluation.plotGameStartResults()

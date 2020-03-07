@@ -32,7 +32,7 @@ class othello_eval:
         plt.errorbar(
             self.gameStartEvalTestedVals,
             self.gameStartEvalResult,
-            np.sqrt(self.gameStartEvalVar),
+            self.gameStartEvalVar,
         )
         plt.ylim((0, 1))
         plt.title(

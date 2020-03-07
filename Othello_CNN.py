@@ -1,9 +1,12 @@
 import torch
 from torch.nn import Linear, ReLU, CrossEntropyLoss, Sequential, Conv2d, MaxPool2d, MaxUnpool2d, Module, Softmax, BatchNorm2d, Dropout
-
-class OthelloCNN(Module):
-    def __init__(self):
-        super().__init__()
+from Othello import othello
+class OthelloCNN(othello.ai):
+    def __init__(self,marker):
+        self.name = "CNN_ai"
+        self.marker = marker
+        # Presuming pkl file is in current directory
+        self.learner = load_learner('.', file = 'model.pkl')
 
         self.conv1 = Sequential(
             Conv2d(2, 64, kernel_size=3, padding=0, stride=1),
@@ -57,3 +60,7 @@ class OthelloCNN(Module):
         x = self.fc2(x)
 
         return x
+
+    def getMove(self, board):
+        move = self.learner.predict(board)
+        return [move[0],move[1]]
