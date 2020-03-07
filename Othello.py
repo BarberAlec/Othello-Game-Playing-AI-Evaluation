@@ -25,6 +25,16 @@ class othello:
             self._makeMove_(dupeBoard, self.marker, x, y)
             score = self.getCurrentScore(dupeBoard)[str(self.marker)]
             return score
+        
+        def createNewBoardState(self,board,x,y):
+            dupeBoard = self._duplicateBoard_(board)
+            self._makeMove_(dupeBoard, self.marker, x, y)
+            return dupeBoard
+        
+        def createChildBoardState(self,board,x,y, marker):
+            dupeBoard = self._duplicateBoard_(board)
+            self._makeMove_(dupeBoard, marker, x, y)
+            return dupeBoard
 
         def _makeMove_(self, board, tile, xstart, ystart):
 
