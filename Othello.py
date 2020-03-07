@@ -2,7 +2,6 @@ import random
 import numpy as np
 
 # TODO: Create evaluation structure
-# TODO: Implement random game start option
 
 
 class othello:
@@ -170,26 +169,52 @@ class othello:
         self.mainBoard = self.createRandomBoard(start_move)
 
         # TODO: reimplement random player start
-        while True:
-            turn_state = self.takeTurn(self.bot1,self.bot2, verbose=self.verbose)
-            if turn_state == 1:
-                return
-            elif turn_state == -1:
-                break
+        if random.randint(0, 1) == 0:
+            while True:
+                turn_state = self.takeTurn(self.bot1,self.bot2, verbose=self.verbose)
+                if turn_state == 1:
+                    return
+                elif turn_state == -1:
+                    break
 
-            turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
-            if turn_state == 1:
-                return
-            elif turn_state == -1:
-                break
+                turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
+                if turn_state == 1:
+                    return
+                elif turn_state == -1:
+                    break
+        else:
+            while True:
+                turn_state = self.takeTurn(self.bot1,self.bot2, verbose=self.verbose)
+                if turn_state == 1:
+                    return
+                elif turn_state == -1:
+                    break
+
+                turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
+                if turn_state == 1:
+                    return
+                elif turn_state == -1:
+                    break
 
         # Game finished, show results
-        self.displayResults(self.bot1)
+        if self.verbose:
+            self.displayResults(self.bot1)
         return self.getScoreOfBoard(self.mainBoard)
 
     def createRandomBoard(self,turns_in):
-        # TODO:make
-        return self.mainBoard
+        B = self.getNewBoard()
+        self.resetBoard(B)
+
+        for i in range(turns_in):
+            legal_moves = self.getValidMoves(B,1)
+            move = random.choice(legal_moves)
+            self.makeMove(B,1,move[0],move[1])
+
+            legal_moves = self.getValidMoves(B,-1)
+            move = random.choice(legal_moves)
+            self.makeMove(B,-1,move[0],move[1])
+            
+        return B
 
     def takeTurn(self, bot, bot_other, verbose=True):
         if verbose:
