@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from Othello import othello
-from othello_ai import human_ai, decisionRule_ai, minimax_ai, NN_ai
+from othello_ai import human_ai, decisionRule_ai, NN_ai
 import copy
 
 """
@@ -38,9 +38,7 @@ class minimax_ai(othello.ai):
           [ 4, -3, 2, 2, 2, 2, -3, 4]]
 
     def getMove(self, board):
-        print("Im player: ",self.marker+2)
-        x = 0
-        y = 0
+        #print("Im player: ",self.marker+2)
         self.cornerweight(board)
         self.get_cost(board)
         next_move = self.getLegalMoves(board, self.marker)
@@ -51,12 +49,12 @@ class minimax_ai(othello.ai):
         #Run Alpha Beta MiniMax
         new_eval_ab = self.alpha_beta_minmax(board,self.depth,True,float('-inf'),float('inf'))
 
-        print("----")
-        print("Eval: ",new_eval_ab)
-        print("Move: (adj.) ",self.next_mn_move[0]+1,",",self.next_mn_move[1]+1)
-        print("Min_max Predicted Next State")
-        print(self.draw_child_board(self.next_state_mn))
-        print("----")
+        # print("----")
+        # print("Eval: ",new_eval_ab)
+        # print("Move: (adj.) ",self.next_mn_move[0]+1,",",self.next_mn_move[1]+1)
+        # print("Min_max Predicted Next State")
+        # print(self.draw_child_board(self.next_state_mn))
+        # print("----")
         return self.next_mn_move
 
     def cornerweight(self,board):
@@ -72,10 +70,10 @@ class minimax_ai(othello.ai):
         return total
 
     def draw_child_board(self,board):
-        print("----------------CHILD-------------------")
+        #print("----------------CHILD-------------------")
         othello.drawBoard(self,board)
         self.cornerweight(board)
-        print("----------------END CHILD-------------------")
+        #print("----------------END CHILD-------------------")
 
     def get_cost(self,board):
         p1_pieces = np.where(board == self.marker)
@@ -155,14 +153,14 @@ class minimax_ai(othello.ai):
 
 
 
+if __name__ == '__main__':
+    # plt.imshow(WEIGHTS, cmap='hot', interpolation='nearest')
+    # plt.show()
 
-# plt.imshow(WEIGHTS, cmap='hot', interpolation='nearest')
-# plt.show()
+    # Create new instance of othello game with spefied ai players
+    game = othello(minimax_ai(1), human_ai(-1))
 
-# Create new instance of othello game with spefied ai players
-game = othello(minimax_ai(1), human_ai(-1))
-
-# Begin game
-score = game.startgame()
+    # Begin game
+    score = game.startgame()
 
 

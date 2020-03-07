@@ -202,19 +202,24 @@ class othello:
         return self.getScoreOfBoard(self.mainBoard)
 
     def createRandomBoard(self, turns_in):
-        B = self.getNewBoard()
-        self.resetBoard(B)
+        while True:
+            B = self.getNewBoard()
+            self.resetBoard(B)
 
-        for i in range(turns_in):
-            legal_moves = self.getValidMoves(B, 1)
-            move = random.choice(legal_moves)
-            self.makeMove(B, 1, move[0], move[1])
+            for i in range(turns_in):
+                legal_moves = self.getValidMoves(B, 1)
+                if legal_moves == []:
+                    continue
+                move = random.choice(legal_moves)
+                self.makeMove(B, 1, move[0], move[1])
 
-            legal_moves = self.getValidMoves(B, -1)
-            move = random.choice(legal_moves)
-            self.makeMove(B, -1, move[0], move[1])
+                legal_moves = self.getValidMoves(B, -1)
+                if legal_moves == []:
+                    continue
+                move = random.choice(legal_moves)
+                self.makeMove(B, -1, move[0], move[1])
 
-        return B
+            return B
 
     def takeTurn(self, bot, bot_other, verbose=True):
         if verbose:
@@ -386,12 +391,6 @@ class othello:
                     oscore += 1
 
         return {"1": xscore, "-1": oscore}
-
-    def firstTurn(self):
-        # Who plays first
-        if random.randint(0, 1) == 0:
-            return "bot1"
-        return "bot2"
 
     def makeMove(self, board, tile, xstart, ystart):
         # Place the tile on the board at xstart, ystart, and flip any of the opponent's pieces.
