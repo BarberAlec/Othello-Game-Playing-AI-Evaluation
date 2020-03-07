@@ -24,13 +24,13 @@ class othello:
             self._makeMove_(dupeBoard, self.marker, x, y)
             score = self.getCurrentScore(dupeBoard)[str(self.marker)]
             return score
-        
-        def createNewBoardState(self,board,x,y):
+
+        def createNewBoardState(self, board, x, y):
             dupeBoard = self._duplicateBoard_(board)
             self._makeMove_(dupeBoard, self.marker, x, y)
             return dupeBoard
-        
-        def createChildBoardState(self,board,x,y, marker):
+
+        def createChildBoardState(self, board, x, y, marker):
             dupeBoard = self._duplicateBoard_(board)
             self._makeMove_(dupeBoard, marker, x, y)
             return dupeBoard
@@ -171,7 +171,7 @@ class othello:
         # TODO: reimplement random player start
         if random.randint(0, 1) == 0:
             while True:
-                turn_state = self.takeTurn(self.bot1,self.bot2, verbose=self.verbose)
+                turn_state = self.takeTurn(self.bot1, self.bot2, verbose=self.verbose)
                 if turn_state == 1:
                     return
                 elif turn_state == -1:
@@ -184,13 +184,13 @@ class othello:
                     break
         else:
             while True:
-                turn_state = self.takeTurn(self.bot1,self.bot2, verbose=self.verbose)
+                turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
                 if turn_state == 1:
                     return
                 elif turn_state == -1:
                     break
 
-                turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
+                turn_state = self.takeTurn(self.bot1, self.bot2, verbose=self.verbose)
                 if turn_state == 1:
                     return
                 elif turn_state == -1:
@@ -201,19 +201,19 @@ class othello:
             self.displayResults(self.bot1)
         return self.getScoreOfBoard(self.mainBoard)
 
-    def createRandomBoard(self,turns_in):
+    def createRandomBoard(self, turns_in):
         B = self.getNewBoard()
         self.resetBoard(B)
 
         for i in range(turns_in):
-            legal_moves = self.getValidMoves(B,1)
+            legal_moves = self.getValidMoves(B, 1)
             move = random.choice(legal_moves)
-            self.makeMove(B,1,move[0],move[1])
+            self.makeMove(B, 1, move[0], move[1])
 
-            legal_moves = self.getValidMoves(B,-1)
+            legal_moves = self.getValidMoves(B, -1)
             move = random.choice(legal_moves)
-            self.makeMove(B,-1,move[0],move[1])
-            
+            self.makeMove(B, -1, move[0], move[1])
+
         return B
 
     def takeTurn(self, bot, bot_other, verbose=True):

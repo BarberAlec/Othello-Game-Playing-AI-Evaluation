@@ -60,7 +60,6 @@ class decisionRule_ai(othello.ai):
 
         # Go through all the possible moves and remember the best scoring move
         bestScore = -1
-        print(possibleMoves)
         for x, y in possibleMoves:
             score = self.peekScore(board, x, y)
             if score > bestScore:
