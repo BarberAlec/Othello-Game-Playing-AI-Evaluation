@@ -6,6 +6,7 @@ from Othello import othello
 from othello_ai import human_ai, decisionRule_ai, NN_ai
 from Othello_Evaluation import othello_eval
 from ab_pruning_ohtello import minimax_ai
+import numpy as np
 
 # Create new instance of othello game with spefied ai players
 # game = othello(human_ai("X"), decisionRule_ai("O"))
@@ -15,6 +16,6 @@ from ab_pruning_ohtello import minimax_ai
 # Begin game
 # score = game.startgame(start_move=5)
 
-evaluation = othello_eval(minimax_ai(1), decisionRule_ai(-1), runs=1000)
-evaluation.gameStartEval()
+evaluation = othello_eval(minimax_ai(1), decisionRule_ai(-1), runs=100)
+evaluation.gameStartEval(values2test=np.arange(0,30))
 evaluation.plotGameStartResults()

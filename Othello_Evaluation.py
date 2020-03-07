@@ -33,6 +33,8 @@ class othello_eval:
             self.gameStartEvalTestedVals,
             self.gameStartEvalResult,
             self.gameStartEvalVar,
+            ls='none',
+            fmt='-o',
         )
         plt.ylim((0, 1))
         plt.title(

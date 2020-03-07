@@ -222,7 +222,8 @@ class othello:
             # Check to see if any moves can stil be made on board
             if self.getValidMoves(B, 1) == []:
                 continue
-
+            if self.getValidMoves(B, -1) == []:
+                continue
             return B
 
     def takeTurn(self, bot, bot_other, verbose=True):
