@@ -26,6 +26,7 @@ class minimax_ai(othello.ai):
         self.marker = marker
         self.next_state_mn = []
         self.next_mn_move = 0
+        self.depth = 2
 
         self.WEIGHTS = [[4, -3, 2, 2, 2, 2, -3, 4,],
           [ -3, -4, -1, -1, -1, -1, -4, -3,],
@@ -43,10 +44,15 @@ class minimax_ai(othello.ai):
         self.cornerweight(board)
         self.get_cost(board)
         next_move = self.getLegalMoves(board, self.marker)
-        new_eval = self.minimax(board,2,True)
+
+        #Run MiniMax 
+        # new_eval = self.minimax(board,self.depth,True)
+
+        #Run Alpha Beta MiniMax
+        new_eval_ab = self.alpha_beta_minmax(board,self.depth,True,float('-inf'),float('inf'))
 
         print("----")
-        print("Eval: ",new_eval)
+        print("Eval: ",new_eval_ab)
         print("Move: (adj.) ",self.next_mn_move[0]+1,",",self.next_mn_move[1]+1)
         print("Min_max Predicted Next State")
         print(self.draw_child_board(self.next_state_mn))
@@ -89,10 +95,7 @@ class minimax_ai(othello.ai):
         valid_moves = self.getLegalMoves(current_board_state,child_marker)
         children = []
         for move in valid_moves:
-            # print("Player",child_marker+2)
-            # print("Valid Moves (adj.): ",move[0]+1,",",move[1]+1)
             new_board = self.createChildBoardState(current_board_state,move[0],move[1],child_marker)
-            # self.draw_child_board(new_board)
             children.append((new_board,move))
         return children
 
@@ -102,9 +105,33 @@ class minimax_ai(othello.ai):
         else :
             return True
 
+    def alpha_beta_minmax(self,current_board_state, depth,maximizingPlayer,alpha,beta):
+        if depth == 0 or self.game_finished(current_board_state):
+            return self.cornerweight(current_board_state)
+        if maximizingPlayer:
+            maxEval = float('-inf')
+            for child in self.get_children_state(current_board_state,True):
+                eval = self.alpha_beta_minmax(child[0],depth-1,False,alpha,beta)
+                maxEval = max(maxEval,eval)
+                alpha = max(alpha,eval)
+                if beta <= alpha:
+                    break
+                if maxEval == eval:
+                    self.next_state_mn = copy.deepcopy(child[0])
+                    self.next_mn_move = child[1]
+            return maxEval 
+        else:
+            minEval = float('inf')
+            for child in self.get_children_state(current_board_state,False):
+                eval = self.alpha_beta_minmax(child[0],depth-1,True,alpha,beta)
+                minEval = min(minEval,eval)   
+                beta = min(beta,eval) 
+                if beta <= alpha:
+                    break
+            return minEval     
+
     def minimax(self,current_board_state, depth, maximizingPlayer):
         if depth == 0 or self.game_finished(current_board_state):
-            # print("Reached depth or end of game")
             return self.cornerweight(current_board_state)
         if maximizingPlayer:
             maxEval = float('-inf')
@@ -112,19 +139,14 @@ class minimax_ai(othello.ai):
                 eval = self.minimax(child[0],depth-1,False)
                 maxEval = max(maxEval,eval)
                 if maxEval == eval:
-                    # print("*******************************Yeet******************************* Eval: ",eval)
-                    # self.draw_child_board(child[0])
                     self.next_state_mn = copy.deepcopy(child[0])
                     self.next_mn_move = child[1]
-                    # print("Move",child[1])
-            # print("maxeval")
             return maxEval 
         else:
             minEval = float('inf')
             for child in self.get_children_state(current_board_state,False):
                 eval = self.minimax(child[0],depth-1,True)
-                minEval = min(minEval,eval)    
-            # print("mineval")
+                minEval = min(minEval,eval)
             return minEval 
 
 
