@@ -3,10 +3,10 @@
 To analyse and evaluate state-of-the-art AI algorithms to solve a problem of your choice.
 
 ## Team Members:
-Alec Barber
-Warren Pretorius
-Uzair Qureshi
-Dhruv Kumar
+* Alec Barber
+* Warren Pretorius
+* Uzair Qureshi
+* Dhruv Kumar
 
 ## Othello Game
 
