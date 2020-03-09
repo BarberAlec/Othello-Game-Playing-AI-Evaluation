@@ -5,7 +5,7 @@ from progress.bar import Bar
 
 
 class othello_eval:
-    def __init__(self, bot1, bot2, runs=50):
+    def __init__(self, bot1, bot2, runs=8):
         self.MC_runs = runs
         self.gameStartEvalResult = 0
         self.gameStartEvalVar = 0
@@ -45,5 +45,6 @@ class othello_eval:
         )
         plt.xlabel("Number of Random turns before game begins")
         plt.ylabel("Proportion of " + self.bot1.name + " wins")
-        plt.show()
+        plt.savefig("depth_"+self.bot1.depth+".png")
+        # plt.show()
 
