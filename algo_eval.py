@@ -17,6 +17,6 @@ import numpy as np
 # score = game.startgame(start_move=5)
 
 for d in range(1,8):
-    evaluation = othello_eval(minimax_ai(1,d), decisionRule_ai(-1), runs=100)
-    evaluation.gameStartEval(values2test=np.arange(0,15))
+    evaluation = othello_eval(minimax_ai(1,d), decisionRule_ai(-1), runs=200)
+    evaluation.gameStartEval(values2test=np.arange(0,20))
     evaluation.plotGameStartResults()

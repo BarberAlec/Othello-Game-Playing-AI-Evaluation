@@ -10,7 +10,6 @@ matplotlib = "*"
 numpy = "*"
 progress = "*"
 pandas = "*"
-torch = "*"
 
 [requires]
 python_version = "3.7"

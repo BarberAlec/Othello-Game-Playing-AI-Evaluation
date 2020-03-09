@@ -143,13 +143,12 @@ class minimax_ai(othello.ai):
     #Different Heuristics defined by heur_*
 
     def cornerweight(self, board, maximizingPlayer):
-        child_marker = self.marker if maximizingPlayer else -self.marker
         total = 0
         for x in range(8):
             for y in range(8):
-                if board[x][y] == child_marker:
+                if board[x][y] == self.marker:
                     total += self.WEIGHTS[x][y]
-                elif board[x][y] == -child_marker:
+                elif board[x][y] == -self.marker:
                     total -= self.WEIGHTS[x][y]
         if self.printing: print("CornerWeight: ", total)
         return total
