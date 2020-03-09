@@ -3,7 +3,7 @@ from torch.nn import Linear, ReLU, CrossEntropyLoss, Sequential, Conv2d, MaxPool
 
 
 class OthelloCNN(Module):
-    def __init__(self,marker):
+    def __init__(self):
         super().__init__()
         
 
