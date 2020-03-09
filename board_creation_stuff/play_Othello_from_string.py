@@ -12,7 +12,7 @@ bar = Bar('Playing Games..', max=len(game_names))
 
 for game_name in game_names:
 
-    game = othello(game_name, stringPlayer(1), stringPlayer(-1))
+    game = othello(game_name, stringPlayer(-1), stringPlayer(1))
     score = game.startgame(start_move=0)
 
     bar.next()

@@ -175,61 +175,29 @@ class othello:
         while True:
             turn_state = self.takeTurn(self.bot1, self.bot2, verbose=self.verbose)
             if turn_state == 1:
-                return
+                return self.getScoreOfBoard(self.mainBoard)
             elif turn_state == -1:
                 break
 
             turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
             if turn_state == 1:
-                return
+                return self.getScoreOfBoard(self.mainBoard)
             elif turn_state == -1:
                 break
-
-        # TODO: reimplement random player start
-        # if random.randint(0, 1) == 0:
-        #     while True:
-        #         turn_state = self.takeTurn(self.bot1, self.bot2, verbose=self.verbose)
-        #         if turn_state == 1:
-        #             return
-        #         elif turn_state == -1:
-        #             break
-        #
-        #         turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
-        #         if turn_state == 1:
-        #             return
-        #         elif turn_state == -1:
-        #             break
-        # else:
-        #     while True:
-        #         turn_state = self.takeTurn(self.bot2, self.bot1, verbose=self.verbose)
-        #         if turn_state == 1:
-        #             return
-        #         elif turn_state == -1:
-        #             break
-        #
-        #         turn_state = self.takeTurn(self.bot1, self.bot2, verbose=self.verbose)
-        #         if turn_state == 1:
-        #             return
-        #         elif turn_state == -1:
-        #             break
-
-        # Game finished, show results
-        # if self.verbose:
-        #     self.displayResults(self.bot1)
         return self.getScoreOfBoard(self.mainBoard)
 
     def createRandomBoard(self, turns_in):
         B = self.getNewBoard()
         self.resetBoard(B)
+        # print('turns in:', turns_in)
+        # for i in range(turns_in):
+        #     legal_moves = self.getValidMoves(B, 1)
+        #     move = random.choice(legal_moves)
+        #     self.makeMove(B, 1, move[0], move[1])
 
-        for i in range(turns_in):
-            legal_moves = self.getValidMoves(B, 1)
-            move = random.choice(legal_moves)
-            self.makeMove(B, 1, move[0], move[1])
-
-            legal_moves = self.getValidMoves(B, -1)
-            move = random.choice(legal_moves)
-            self.makeMove(B, -1, move[0], move[1])
+        #     legal_moves = self.getValidMoves(B, -1)
+        #     move = random.choice(legal_moves)
+        #     self.makeMove(B, -1, move[0], move[1])
 
         return B
 
@@ -237,14 +205,16 @@ class othello:
         # if verbose:
         #     self.drawBoard(self.mainBoard)
         #     self.showPoints(self.mainBoard)
-
+        # print("Take Turn count:",self.count)
         move = bot.getMove(self.mainBoard, self.count, self.game_string, self.game_name)
         self.count += 1
 
         if move == "quit":
             return 1
         else:
-            self.makeMove(self.mainBoard, bot.marker, move[0], move[1])
+            if not self.makeMove(self.mainBoard, bot.marker, move[0], move[1]):
+                self.drawBoard(self.mainBoard)
+                # print('EROROROROROROROROROROORRO')
 
         if self.getValidMoves(self.mainBoard, bot_other.marker) == []:
             return -1
@@ -286,13 +256,13 @@ class othello:
 
     def drawBoard(self, board):
         return
-        # print("Pass")
-        # This function prints out the board that it was passed. Returns None.
+        #print("Pass")
+        #This function prints out the board that it was passed. Returns None.
         # HLINE = "  +---+---+---+---+---+---+---+---+"
         # VLINE = "  |   |   |   |   |   |   |   |   |"
         # print("    1   2   3   4   5   6   7   8")
         # print(HLINE)
-        #
+        
         # for y in range(8):
         #     print(VLINE)
         #     print(y + 1, end=" ")

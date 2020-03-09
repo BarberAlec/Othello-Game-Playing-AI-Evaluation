@@ -27,10 +27,12 @@ class stringPlayer(othello.ai):
 
     def getMove(self, board, count, game_string, game_name):
         # Get the move for this board layout
+        # print(self.marker)
         if count == len(game_string):
+            # print('Am in quit place bois')
             move = "quit"
             return move
-
+        # print("getmovve counter:",count)
         move = game_string[count]
 
         if (count%2 == 1):
