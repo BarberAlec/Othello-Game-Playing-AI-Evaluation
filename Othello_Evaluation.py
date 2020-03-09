@@ -45,6 +45,6 @@ class othello_eval:
         )
         plt.xlabel("Number of Random turns before game begins")
         plt.ylabel("Proportion of " + self.bot1.name + " wins")
-        plt.savefig("depth_"+self.bot1.depth+".png")
+        plt.savefig("depth_"+str(self.bot1.depth)+".png")
         # plt.show()
 
