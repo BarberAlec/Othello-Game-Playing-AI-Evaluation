@@ -4,11 +4,10 @@ from torch.nn import Linear, ReLU, CrossEntropyLoss, Sequential, Conv2d, MaxPool
 
 class OthelloCNN(Module):
     def __init__(self):
-        super().__init__()
-        
+        super(OthelloCNN, self).__init__()
 
         self.conv1 = Sequential(
-            Conv2d(2, 64, kernel_size=3, padding=0, stride=1),
+            Conv2d(3, 64, kernel_size=3, padding=0, stride=1),
             BatchNorm2d(64),
             ReLU() )
 
@@ -47,7 +46,7 @@ class OthelloCNN(Module):
         self.fc2 = Linear( 128, 60 )
 
     def forward(self, x):
-
+        
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)

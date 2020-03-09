@@ -35,14 +35,14 @@ class stringPlayer(othello.ai):
         # print("getmovve counter:",count)
         move = game_string[count]
 
-        if (count%2 == 1):
-            board_copy = board * -1
-        else:
-            board_copy = board
+        # if (count%2 == 1):
+        #     board_copy = board * -1
+        # else:
+        #     board_copy = board
 
         # Get the player position matrices
-        player1_mat = np.where(board_copy == self.marker, 1, 0)
-        player2_mat = np.where(board_copy == ((-1)*self.marker), 1, 0)
+        player1_mat = np.where(board == self.marker, 1, 0)
+        player2_mat = np.where(board == ((-1)*self.marker), 1, 0)
 
         # Concatenate the matrices
         mat_3d = np.dstack((player1_mat, player2_mat))
