@@ -6,7 +6,11 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-requests = "*"
+matplotlib = "*"
+numpy = "*"
+progress = "*"
+pandas = "*"
+torch = "*"
 
 [requires]
 python_version = "3.7"

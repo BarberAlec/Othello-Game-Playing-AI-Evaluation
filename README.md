@@ -19,3 +19,16 @@ To analyse and evaluate state-of-the-art AI algorithms to solve a problem of you
 - [x] Nearal Networks
 - [x] Alpha-Beta Pruning
 - [x] Scout Algorithm
+
+
+## Dependancy Management
+# PipEnv 
+Used for managing dependencies in python project
+- `pipenv shell` - activate virtual environment 
+- `exit` - exit/(deactivate) virtual environment
+- `pipenv run python` - runs python 
+- `pipenv install pytest (--dev)` - Add new package and save to pipfile 
+- `pipenv --rm` - Removes Virtual Environment Dir (All necessary vars to rebuild still in pipFile)
+- `pipenv run python algo_eval.py` - Runs Evaluation between MinMax (X) and decisionRule_ai(O) 
+- `pipenv --venv` - Get path to Virtual Environment
+- `pipenv install` - Installs dependencies from pipfile
