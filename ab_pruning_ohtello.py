@@ -37,6 +37,15 @@ class minimax_ai(othello.ai):
                         [2, -1, 1, 0, 0, 1, -1, 2, ],
                         [-3, -4, -1, -1, -1, -1, -4, -3, ],
                         [4, -3, 2, 2, 2, 2, -3, 4]]
+        
+        self.WEIGHTS_2 = [[20, -3, 11, 8, 8, 11, -3, 20],
+                        [-3, -7, -4, 1, 1, -4, -7, -3],
+                        [11, -4, 2, 2, 2, 2, -4, 11],
+                        [8, 1, 2, -3, -3, 2, 1, 8],
+                        [8, 1, 2, -3, -3, 2, 1, 8],
+                        [11, -4, 2, 2, 2, 2, -4, 11],
+                        [-3, -7, -4, 1, 1, -4, -7, -3],
+                        [20, -3, 11, 8, 8, 11, -3, 20]]
 
     def getMove(self, board):
         if self.printing:
@@ -167,39 +176,48 @@ class minimax_ai(othello.ai):
     def heur_coinparty(self,board):
         p1_pieces = len(np.where(board == self.marker)[0])
         p2_pieces = len(np.where(board == -self.marker)[0])
-        return 100*((p1_pieces - p2_pieces)/(p1_pieces + p2_pieces))
+        if p1_pieces > p2_pieces:
+            return 100*((p1_pieces)/(p1_pieces + p2_pieces))
+        elif p1_pieces < p2_pieces:
+            return -100*((p2_pieces)/(p1_pieces + p2_pieces))
+        else:
+            return 0
 
     # Acutal Mobility - Capture relative difference between number of possible moves for max and min players, restrict opponents mobility and increasing own
     def heur_mobility(self, board):
         try :
             p1_moves = len(self.getLegalMoves(board,self.marker)[0])
             p2_moves = len(self.getLegalMoves(board,-self.marker)[0])
-            mob_heur = self.p1_p2_perc(p1_moves,p2_moves) 
+            if p1_moves > p2_moves:
+                m = 100*(p1_moves/(p1_moves+p2_moves))
+            elif p2_moves > p1_moves:
+                m = -100*(p2_moves/(p1_moves+p2_moves))
+            else:
+                m = 0
         except:
-            mob_heur = 0
-        return mob_heur
+            m = 0
+        return m
     
     # Corner - Strategy Corners important, once captured can not be flanked by opponent, providing stability
     def heur_corner(self, board):
         corners = [(0,0),(0,7),(7,7),(7,0)]
-        close_corners = [(0,1),(1,0),(0,6),(1,7),(7,1),(6,0),(6,7),(7,6),]
         p1 = p2 = 0
         for x,y in corners:
             if board[x][y] == self.marker:
                 p1+=1
             elif board[x][y] == -self.marker:
                 p2+=1
-        return p1-p2
+        return 25*(p1-p2)
     
     def heur_corner_closeness(self, board):
-        close_corners = [(0,1),(1,0),(0,6),(1,7),(7,1),(6,0),(6,7),(7,6),]
+        close_corners = [(0,1),(1,0),(0,6),(1,7),(7,1),(6,0),(6,7),(7,6)]
         p1 = p2 = 0
         for x,y in close_corners:
             if board[x][y] == self.marker:
                 p1+=1
             elif board[x][y] == -self.marker:
                 p2+=1
-        return p1-p2
+        return -12.5*(p1-p2)
 
     # Corner strategy - Corners important, once captured can not be flanked by opponent, providing stability
     def heur_cornerweight(self, board):
@@ -209,11 +227,32 @@ class minimax_ai(othello.ai):
         for x in range(8):
             for y in range(8):
                 if board[x][y] == self.marker:
-                    total += self.WEIGHTS[x][y]
+                    total += self.WEIGHTS_2[x][y]
                 elif board[x][y] == -self.marker:
-                    total -= self.WEIGHTS[x][y]
+                    total -= self.WEIGHTS_2[x][y]
         if self.printing: print("Weight: ",total)
         return total
+    
+    def heur_frontier_discs(self,board):
+        p1_total = p2_total = 0
+        x1 = [-1, -1, 0, 1, 1, 1, 0, -1]
+        y1 = [0, 1, 1, 1, 0, -1, -1, -1]
+        empty = np.where(board == 0)
+        if len(empty[0])>0:
+            for tile in empty:
+                for k in range(8):
+                    x = tile[0] + x1[k]
+                    y = tile[1] + y1[k]
+                    if 0<=x and x<8 and 0<=y and y<8:
+                        if board[x][y] == self.marker: p1_total+=1
+                        elif board[x][y] == -self.marker: p2_total+=1
+                
+        if p1_total > p2_total:
+            return -100*p1_total/(p1_total+p2_total)
+        elif p1_total < p2_total:
+            return 100*p2_total/(p1_total+p2_total)
+        else:
+            return 0
 
     # Quantitaive representation of how vilnerable it is to being flanked. semi-/un-/stable/
     # Stable (1) - Can't be flanked in very next move
@@ -232,7 +271,13 @@ class minimax_ai(othello.ai):
         return self.p1_p2_perc(p1_stable_val,p2_stable_val)
 
     def heur_val(self,board):
-        score = 25*self.heur_corner(board) + -12.5*self.heur_corner_closeness(board) + 74*self.heur_mobility(board) + 10*self.heur_coinparty(board)+ 15*self.heur_cornerweight(board)
+        score = (801.724*self.heur_corner(board) 
+        + 382.026*self.heur_corner_closeness(board) 
+        + 78.922*self.heur_mobility(board) 
+        + 10*self.heur_coinparty(board)
+        + 10*self.heur_cornerweight(board) 
+        + 74.396*self.heur_frontier_discs(board))
+        
         return score
     
     def best_move(self,board):
@@ -250,7 +295,6 @@ class minimax_ai(othello.ai):
                 new_board = child[0]
                 
         return new_move,new_board
-
 
 
 if __name__ == '__main__':
