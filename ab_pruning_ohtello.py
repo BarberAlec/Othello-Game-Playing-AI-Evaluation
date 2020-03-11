@@ -219,7 +219,7 @@ class minimax_ai(othello.ai):
                 p2+=1
         return -12.5*(p1-p2)
 
-    # Corner strategy - Corners important, once captured can not be flanked by opponent, providing stability
+    # Static Heuristic strategy - Corners important, once captured can not be flanked by opponent, providing stability
     def heur_cornerweight(self, board):
         p1_total = 0
         p2_total = 0
@@ -238,15 +238,16 @@ class minimax_ai(othello.ai):
         x1 = [-1, -1, 0, 1, 1, 1, 0, -1]
         y1 = [0, 1, 1, 1, 0, -1, -1, -1]
         empty = np.where(board == 0)
-        if len(empty[0])>0:
-            for tile in empty:
-                for k in range(8):
+        for tile in empty:
+            for k in range(8):
+                try:
                     x = tile[0] + x1[k]
                     y = tile[1] + y1[k]
                     if 0<=x and x<8 and 0<=y and y<8:
                         if board[x][y] == self.marker: p1_total+=1
                         elif board[x][y] == -self.marker: p2_total+=1
-                
+                except:
+                    break
         if p1_total > p2_total:
             return -100*p1_total/(p1_total+p2_total)
         elif p1_total < p2_total:
@@ -270,6 +271,7 @@ class minimax_ai(othello.ai):
 
         return self.p1_p2_perc(p1_stable_val,p2_stable_val)
 
+    # Weights from paper -  "Playing Othello with Artificial Intelligence" (http://mkorman.org/othello.pdf)
     def heur_val(self,board):
         score = (801.724*self.heur_corner(board) 
         + 382.026*self.heur_corner_closeness(board) 
