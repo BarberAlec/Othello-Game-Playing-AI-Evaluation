@@ -29,7 +29,6 @@ class minimax_ai(othello.ai):
         self.next_mn_move = 0
         self.depth = set_depth
         self.printing = False
-
         self.WEIGHTS = [[4, -3, 2, 2, 2, 2, -3, 4, ],
                         [-3, -4, -1, -1, -1, -1, -4, -3, ],
                         [2, -1, 1, 0, 0, 1, -1, 2, ],
@@ -43,25 +42,24 @@ class minimax_ai(othello.ai):
         if self.printing:
             print("Im player: ", self.marker+2)
 
-        next_move = self.getLegalMoves(board, self.marker)
 
         # Run MiniMax
-        new_eval_ab = self.minimax(board, self.depth, True)
+        # new_eval_ab = self.minimax(board, self.depth, True)
+        next_move,next_board = self.best_move(board)
 
         # Run Alpha Beta MiniMax
         # new_eval_ab = self.alpha_beta_minmax(board,self.depth,True,float('-inf'),float('inf'))
 
         if self.printing:
             print("----")
-            print("Eval: ", new_eval_ab)
+            print("Move: ", next_move)
             print("Valid Moves Options: ",self.getLegalMoves(board, self.marker))
             print("Move: (adj.) ",
-                  self.next_mn_move[0]+1, ",", self.next_mn_move[1]+1)
-            print("Min_max Predicted Next State")
-            print(self.draw_child_board(self.next_state_mn, self.next_mn_move[0]))
+                  next_move[0]+1, ",", next_move[1]+1)
+            print(self.draw_child_board(next_board, next_move))
             print("----")
 
-        return self.next_mn_move
+        return next_move
 
 
     def draw_child_board(self, board, move):
@@ -80,6 +78,21 @@ class minimax_ai(othello.ai):
             children.append((new_board, move))
         return children
 
+    def get_ordered_children_states(self, current_board_state, maximizingPlayer):
+        child_marker = self.marker if maximizingPlayer else -self.marker
+        valid_moves = self.getLegalMoves(current_board_state, child_marker)
+        children = []
+        res_children = []
+        for move in valid_moves:
+            new_board = self.createChildBoardState(current_board_state, move[0], move[1], child_marker)
+            children.append((new_board,self.heur_val(new_board)))
+            
+        sortedNodes = sorted(children, key = lambda node: node[1], reverse = True)
+        sortedNodes = [node[0] for node in sortedNodes]
+        for node in sortedNodes:
+            res_children.append(node)
+        return res_children
+
     def game_finished(self, board):
         if 0 in board:
             return False
@@ -88,29 +101,20 @@ class minimax_ai(othello.ai):
 
     def alpha_beta_minmax(self, current_board_state, depth, maximizingPlayer, alpha, beta):
         if depth == 0 or self.game_finished(current_board_state):
-            return self.cornerweight(current_board_state,maximizingPlayer)
+            return self.heur_val(current_board_state)
         if maximizingPlayer:
             maxEval = float('-inf')
             for child in self.get_children_states(current_board_state, True):
-                if self.printing:
-                    self.draw_child_board(child[0], child[1])
-                eval = self.alpha_beta_minmax(
-                    child[0], depth-1, False, alpha, beta)
+                eval = self.alpha_beta_minmax(child[0], depth-1, False, alpha, beta)
                 maxEval = max(maxEval, eval)
                 alpha = max(alpha, eval)
                 if beta <= alpha:
                     break
-                if maxEval == eval:
-                    self.next_state_mn = copy.deepcopy(child[0])
-                    self.next_mn_move = child[1]
             return maxEval
         else:
             minEval = float('inf')
             for child in self.get_children_states(current_board_state, False):
-                if self.printing:
-                    self.draw_child_board(child[0], child[1])
-                eval = self.alpha_beta_minmax(
-                    child[0], depth-1, True, alpha, beta)
+                eval = self.alpha_beta_minmax(child[0], depth-1, True, alpha, beta)
                 minEval = min(minEval, eval)
                 beta = min(beta, eval)
                 if beta <= alpha:
@@ -119,30 +123,88 @@ class minimax_ai(othello.ai):
 
     def minimax(self, current_board_state, depth, maximizingPlayer):
         if depth == 0 or self.game_finished(current_board_state):
-            return self.cornerweight(current_board_state,maximizingPlayer)
+            return self.heur_val(current_board_state)
         if maximizingPlayer:
             maxEval = float('-inf')
             for child in self.get_children_states(current_board_state, True):
-                if self.printing:
-                    self.draw_child_board(child[0], child[1])
                 eval = self.minimax(child[0], depth-1, False)
                 maxEval = max(maxEval, eval)
-                if maxEval == eval:
-                    self.next_state_mn = copy.deepcopy(child[0])
-                    self.next_mn_move = child[1]
             return maxEval
         else:
             minEval = float('inf')
             for child in self.get_children_states(current_board_state, False):
-                if self.printing:
-                    self.draw_child_board(child[0], child[1])
                 eval = self.minimax(child[0], depth-1, True)
                 minEval = min(minEval, eval)
             return minEval
+        
+    def nega_scout(self,current_board_state,depth,alpha,beta,color,maximizingPlayer):
+        if depth == 0 or self.game_finished(current_board_state):
+            return color*self.heur_val(current_board_state)
+        
+        fristChild = True
+        for child in self.get_ordered_children_states(current_board_state, not maximizingPlayer):
+            if not fristChild:
+                score = -self.nega_scout(child,depth-1,-alpha-1,-alpha,-color,not maximizingPlayer)
+                if alpha < score and score < beta:
+                    score = -self.nega_scout(child,depth-1,-beta,-score,-color, not maximizingPlayer)
+            else:
+                fristChild = False
+                score = -self.nega_scout(child,depth-1,-beta,-alpha,-color, not maximizingPlayer)
+            alpha = max(alpha,score)
+            if alpha >= beta:
+                break
+        return alpha
+ 
+    def p1_p2_perc(self,p1,p2):
+        if ((p1 !=0) and (p2 !=0 )) :
+            return (100*(p1-p2))/(p1+p2)
+        else: return 0
 
-    #Different Heuristics defined by heur_*
 
-    def cornerweight(self, board, maximizingPlayer):
+    #-----Different Heuristics defined by heur_-----
+
+    # Coin Party - Difference between max player and min player
+    def heur_coinparty(self,board):
+        p1_pieces = len(np.where(board == self.marker)[0])
+        p2_pieces = len(np.where(board == -self.marker)[0])
+        return 100*((p1_pieces - p2_pieces)/(p1_pieces + p2_pieces))
+
+    # Acutal Mobility - Capture relative difference between number of possible moves for max and min players, restrict opponents mobility and increasing own
+    def heur_mobility(self, board):
+        try :
+            p1_moves = len(self.getLegalMoves(board,self.marker)[0])
+            p2_moves = len(self.getLegalMoves(board,-self.marker)[0])
+            mob_heur = self.p1_p2_perc(p1_moves,p2_moves) 
+        except:
+            mob_heur = 0
+        return mob_heur
+    
+    # Corner - Strategy Corners important, once captured can not be flanked by opponent, providing stability
+    def heur_corner(self, board):
+        corners = [(0,0),(0,7),(7,7),(7,0)]
+        close_corners = [(0,1),(1,0),(0,6),(1,7),(7,1),(6,0),(6,7),(7,6),]
+        p1 = p2 = 0
+        for x,y in corners:
+            if board[x][y] == self.marker:
+                p1+=1
+            elif board[x][y] == -self.marker:
+                p2+=1
+        return p1-p2
+    
+    def heur_corner_closeness(self, board):
+        close_corners = [(0,1),(1,0),(0,6),(1,7),(7,1),(6,0),(6,7),(7,6),]
+        p1 = p2 = 0
+        for x,y in close_corners:
+            if board[x][y] == self.marker:
+                p1+=1
+            elif board[x][y] == -self.marker:
+                p2+=1
+        return p1-p2
+
+    # Corner strategy - Corners important, once captured can not be flanked by opponent, providing stability
+    def heur_cornerweight(self, board):
+        p1_total = 0
+        p2_total = 0
         total = 0
         for x in range(8):
             for y in range(8):
@@ -150,38 +212,55 @@ class minimax_ai(othello.ai):
                     total += self.WEIGHTS[x][y]
                 elif board[x][y] == -self.marker:
                     total -= self.WEIGHTS[x][y]
-        if self.printing: print("CornerWeight: ", total)
+        if self.printing: print("Weight: ",total)
         return total
 
-    # Difference between max player and min player
-    def heur_coinparty(self,board,marker):
-        p1_pieces = len(np.where(board == marker)[0])
-        p2_pieces = len(np.where(board == -marker)[0])
+    # Quantitaive representation of how vilnerable it is to being flanked. semi-/un-/stable/
+    # Stable (1) - Can't be flanked in very next move
+    # Semi (0) - Potentially be flanked in future, not immediately
+    # Un (-1) - Can be flanked at very next move
+    def heur_stability(self,board):
+        p1_stable_val = 0
+        p2_stable_val = 0
+        for x in range(8):
+            for y in range(8):
+                if board[x][y] == self.marker:
+                    p1_stable_val += 1
+                elif board[x][y] == -self.marker:
+                    p2_stable_val -= self.WEIGHTS[x][y]
 
-        return (p1_pieces - p2_pieces)
+        return self.p1_p2_perc(p1_stable_val,p2_stable_val)
 
-    # Capture relative difference between number of possible moves for max and min players, restrict opponents mobility and increasing own
-    def heur_mobility(self, board):
-        p1_pieces = len(np.where(board == self.marker)[0])
-        p2_pieces = len(np.where(board == self.marker)[0])
-        self.getLegalMoves
-        if self.printing:
-            print("Empty pieces: ", 64 - p1_pieces - p2_pieces)
-            print("My pieces: ", p1_pieces)
-            print("Opponent pieces: ", p2_pieces)
-            print("Cost: ", p1_pieces - p2_pieces)
-
-        return p1_pieces - p2_pieces
+    def heur_val(self,board):
+        score = 25*self.heur_corner(board) + -12.5*self.heur_corner_closeness(board) + 74*self.heur_mobility(board) + 10*self.heur_coinparty(board)+ 15*self.heur_cornerweight(board)
+        return score
+    
+    def best_move(self,board):
+        max_Eval = float('-inf')
+        new_move = self.getLegalMoves(board, self.marker)[0]
+        new_board = board
+        # Go through valid moves' trees. Choose Max Evaluation Move.
+        for child in self.get_children_states(board, True):
+            eval = self.minimax(child[0], self.depth, False)
+            # eval = self.nega_scout(child[0], self.depth,float('-inf'),float('inf'), 1,False)
+            # eval = self.alpha_beta_minmax(child[0], self.depth,False,float('-inf'),float('inf'))
+            if eval > max_Eval:
+                max_Eval = eval
+                new_move = child[1]
+                new_board = child[0]
+                
+        return new_move,new_board
 
 
 
 if __name__ == '__main__':
+    
     # plt.imshow(WEIGHTS, cmap='hot', interpolation='nearest')
-    # plt.show()
+    # plt.savefig('WeightMatrix_2.png')
 
     # X is 1, O is -1
     # Create new instance of othello game with spefied ai players
     game = othello(minimax_ai(1), decisionRule_ai(-1))
 
     # Begin game
-    score = game.startgame()
+    score = game.startgame(2)
