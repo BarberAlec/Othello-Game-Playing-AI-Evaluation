@@ -28,7 +28,7 @@ Accessible Functions for Othello Board
 
 
 class minimax_ai(othello.ai):
-    def __init__(self, marker, depth,search_mode="scout"):
+    def __init__(self, marker, depth,search_mode="Scout"):
         self.name = "minimax"
         self.marker = marker
         self.next_state_mn = []
@@ -304,11 +304,11 @@ class minimax_ai(othello.ai):
         # Go through valid moves' trees. Choose Max Evaluation Move.
         for child in self.get_children_states(board, True):
             self.nodesVistited+=1
-            if self.search_mode == "minimax":
+            if self.search_mode == "MiniMax":
                 eval = self.minimax(child[0], self.depth-1, False)
-            elif self.search_mode == "scout":
+            elif self.search_mode == "Scout":
                 eval = self.nega_scout(child[0], self.depth-1,float('-inf'),float('inf'), 1)
-            if self.search_mode == "ab":
+            if self.search_mode == "A-B Pruning":
                 eval = self.alpha_beta_minmax(child[0], self.depth-1,False,float('-inf'),float('inf'))
             if eval > max_Eval:
                 max_Eval = eval
@@ -322,7 +322,7 @@ if __name__ == '__main__':
 
     # X is 1, O is -1
     # Create new instance of othello game with spefied ai players
-    game = othello(minimax_ai(1,depth=2,search_mode=1), decisionRule_ai(-1))
+    game = othello(minimax_ai(1,depth=2,search_mode="MiniMax"), decisionRule_ai(-1))
 
     # Begin game
     score = game.startgame()

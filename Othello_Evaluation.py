@@ -1,6 +1,7 @@
 from Othello import othello
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
 from progress.bar import Bar
 import pandas as pd
 import threading as thr
@@ -99,31 +100,36 @@ class othello_eval:
 
         return  (result, nodesVisitedArray)
 
-    def plotGameStartResults(self):
-        plt.errorbar(
+    def plotGameStartResults(self,draw=True):
+        
+        fig, ax = plt.subplots(figsize=(12,9))
+        ax.errorbar(
             self.gameStartEvalTestedVals,
             self.gameStartEvalResult,
             self.gameStartEvalVar,
             ls="none",
             fmt="-o",
-            label=self.bot1.search_mode + "_" + str(self.bot1.depth),
+            label=self.bot1.search_mode + ": Depth=" + str(self.bot1.depth),
         )
-        plt.ylim((0, 1))
-        plt.title(
-            self.bot1.search_mode
-            + " vs "
-            + self.bot2.name
-            + " : Effect of game start time to performance"
-        )
-        plt.xlabel("Number of Random turns before game begins")
-        plt.ylabel("Proportion of " + self.bot1.search_mode + " wins")
-        plt.legend()
-
-        plt.savefig(
+        ax.set_ylim((0, 1))
+        # plt.title(
+        #     self.bot1.search_mode
+        #     + " vs "
+        #     + self.bot2.name
+        #     + " : Effect of game start time to performance"
+        # )
+        ax.set_xlabel("Number of random turns before game begins")
+        ax.set_ylabel("Proportion of wins")
+        ax.legend()
+        #ax.xaxis.set_major_formatter(FormatStrFormatter('%0.01f'))
+        xticks = np.arange(0, self.gameStartEvalTestedVals[-1]+1, 2)
+        ax.set_xticks(xticks)
+        fig.savefig(
             "./Search_Mode_Results/depth_"
             + str(self.bot1.depth)
             + "_"
             + self.bot1.search_mode
             + ".png"
         )
-        plt.show()
+        if draw:
+            plt.show()
