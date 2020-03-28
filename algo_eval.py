@@ -31,7 +31,7 @@ def adverserial_MC():
     search_modes = ["MiniMax", "A-B Pruning", "Scout"]
     debth_range = range(2, 4)
     op_cond_range = np.arange(0, 20, 2)
-    mc_runs = 200
+    mc_runs = 2
 
     for mode in search_modes:
         for d in debth_range:
@@ -40,6 +40,7 @@ def adverserial_MC():
                 minimax_ai(1, depth=d, search_mode=mode),
                 decisionRule_ai(-1),
                 runs=mc_runs,
+                adverse=True,
             )
             evaluation.gameStartEval(values2test=(op_cond_range))
             evaluation.plotGameStartResults(draw=False)
