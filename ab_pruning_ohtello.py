@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from Othello import othello
-from othello_ai import human_ai, decisionRule_ai, NN_ai
+from othello_ai import human_ai, decisionRule_ai
 import copy
 
 """

@@ -171,7 +171,8 @@ class othello:
         self.mainBoard = self.createRandomBoard(start_move)
 
         # TODO: reimplement random player start
-        if random.randint(0, 1) == 0:
+        random_num = random.randint(0, 1)
+        if random_num == 0:
             while True:
                 turn_state = self.takeTurn(self.bot1, self.bot2, verbose=self.verbose)
                 if turn_state == 1:
