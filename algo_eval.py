@@ -21,10 +21,10 @@ import numpy as np
 search_modes = ["minimax","ab","scout"]
 
 for mode in range(3):
-    for d in range(1,3): # Depths
+    for d in range(1,2): # Depths
         print("Running ", search_modes[mode]," with a depth of ",d)
-        evaluation = othello_eval(minimax_ai(1,depth=d,search_mode=search_modes[mode]), decisionRule_ai(-1), runs=20)
-        evaluation.gameStartEval(values2test=(np.arange(0,4)))
+        evaluation = othello_eval(minimax_ai(1,depth=d,search_mode=search_modes[mode]), decisionRule_ai(-1), runs=2)
+        evaluation.gameStartEval(values2test=(np.arange(0,3)))
         evaluation.plotGameStartResults()
 
 
