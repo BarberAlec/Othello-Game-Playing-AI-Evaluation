@@ -16,7 +16,23 @@ import numpy as np
 # Begin game
 # score = game.startgame(start_move=5)
 
-for d in range(1,8):
-    evaluation = othello_eval(minimax_ai(1,d), decisionRule_ai(-1), runs=200)
-    evaluation.gameStartEval(values2test=np.arange(0,20))
-    evaluation.plotGameStartResults()
+
+# Make sure search algs are always bot 1, because we need to reset the nodesVisited to 0 after every game. 
+search_modes = ["minimax","ab","scout"]
+
+for mode in range(3):
+    for d in range(1,3): # Depths
+        print("Running ", search_modes[mode]," with a depth of ",d)
+        evaluation = othello_eval(minimax_ai(1,depth=d,search_mode=search_modes[mode]), decisionRule_ai(-1), runs=20)
+        evaluation.gameStartEval(values2test=(np.arange(0,4)))
+        evaluation.plotGameStartResults()
+
+
+
+# evaluation = othello_eval(minimax_ai(1,depth=2,search_mode='ab'), decisionRule_ai(-1), runs=20)
+# evaluation.gameStartEval(values2test=(np.arange(0,3)))
+# evaluation.plotGameStartResults()
+
+#For Every Run game it will save the png and a 2d array of the nodesvisited
+
+
