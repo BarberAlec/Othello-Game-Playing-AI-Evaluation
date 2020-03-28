@@ -6,13 +6,14 @@ import pandas as pd
 
 
 class othello_eval:
-    def __init__(self, bot1, bot2, runs=8):
+    def __init__(self, bot1, bot2, runs=8,adverse=False):
         self.MC_runs = runs
         self.gameStartEvalResult = 0
         self.gameStartEvalVar = 0
         self.gameStartEvalTestedVals = 0
         self.bot1 = bot1
         self.bot2 = bot2
+        self.adverse = adverse
 
     def gameStartEval(self, values2test=np.arange(0, 10)):
         results = np.zeros((len(values2test), self.MC_runs))
@@ -32,8 +33,9 @@ class othello_eval:
             # results[j] = results[j] / self.MC_runs
             bar_MC.finish()
         # Save nodes visited and Results
-        pd.DataFrame(nodesVisitedArray).to_csv("./Search_Mode_Results/"+self.bot1.search_mode+"_depth"+str(self.bot1.depth)+"_nodesV.csv",header=None,index=None)
-        pd.DataFrame(results).to_csv("./Search_Mode_Results/"+self.bot1.search_mode+"_depth"+str(self.bot1.depth)+"_wins.csv",header=None,index=None)
+        if self.adverse:
+            pd.DataFrame(nodesVisitedArray).to_csv("./Search_Mode_Results/"+self.bot1.search_mode+"_depth"+str(self.bot1.depth)+"_nodesV.csv",header=None,index=None)
+            pd.DataFrame(results).to_csv("./Search_Mode_Results/"+self.bot1.search_mode+"_depth"+str(self.bot1.depth)+"_wins.csv",header=None,index=None)
         self.gameStartEvalResult = np.mean(results, axis=1)
         self.gameStartEvalVar = np.var(results, axis=1)
 
@@ -57,6 +59,6 @@ class othello_eval:
         plt.ylabel("Proportion of " + self.bot1.search_mode + " wins")
         plt.legend()
         
-        plt.savefig("./Search_Mode_Results/depth_"+str(self.bot1.depth)+"_"+self.bot1.search_mode+".png")
-        # plt.show()
+        #plt.savefig("./Search_Mode_Results/depth_"+str(self.bot1.depth)+"_"+self.bot1.search_mode+".png")
+        plt.show()
 

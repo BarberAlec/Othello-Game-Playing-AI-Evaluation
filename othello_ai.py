@@ -18,8 +18,10 @@ Contact Alec if other funcitionality is required.
 
 class human_ai(othello.ai):
     def __init__(self, marker):
-        self.name = "human"
+        self.name = "Human"
         self.marker = marker
+        self.search_mode = 'Human'
+        self.depth = 0
 
     def getMove(self, board):
         DIGITS1TO8 = "1 2 3 4 5 6 7 8".split()
@@ -45,8 +47,10 @@ class human_ai(othello.ai):
 
 class decisionRule_ai(othello.ai):
     def __init__(self, marker):
-        self.name = "decison_rule"
+        self.name = "Greedy"
         self.marker = marker
+        self.search_mode = 'Greedy'
+        self.depth = 0
 
     def getMove(self, board):
         possibleMoves = self.getLegalMoves(board, self.marker)
@@ -67,23 +71,3 @@ class decisionRule_ai(othello.ai):
                 bestScore = score
         return bestMove
 
-
-class minimax_ai(othello.ai):
-    def __init__(self, marker):
-        self.name = "minimax"
-
-    def getMove(self, board):
-        x = 0
-        y = 0
-        return [x, y]
-
-
-class NN_ai(othello.ai):
-    def __init__(self, marker):
-        self.name = "NN"
-        self.marker = marker
-
-    def getMove(self, board):
-        x = 0
-        y = 0
-        return [x, y]

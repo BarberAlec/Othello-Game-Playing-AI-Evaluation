@@ -18,6 +18,8 @@ class othello:
         def __init__(self, marker):
             self.name = "base_ai"
             self.marker = marker
+            self.depth = 0
+            self.search_mode = 0
 
         def peekScore(self, board, x, y):
             dupeBoard = self._duplicateBoard_(board)
@@ -260,19 +262,21 @@ class othello:
     def displayResults(self, bot):
         self.drawBoard(self.mainBoard)
         scores = self.getScoreOfBoard(self.mainBoard)
-        print("X scored %s points. O scored %s points." % (scores["1"], scores["-1"]))
-        if scores[str(bot.marker)] > scores[str(self.bot2.marker)]:
-            print(
-                "You beat the computer by %s points! Congratulations!"
-                % (scores[str(bot.marker)] - scores[str(self.bot2.marker)])
-            )
-        elif scores[str(bot.marker)] < scores[str(self.bot2.marker)]:
-            print(
-                "You lost. The computer beat you by %s points."
-                % (scores[str(self.bot2.marker)] - scores[str(bot.marker)])
-            )
-        else:
-            print("The game was a tie!")
+        #print("X scored %s points. O scored %s points." % (scores["1"], scores["-1"]))
+        print(self.bot1.name,' score: ', str(scores[str(self.bot1.marker)]))
+        print(self.bot2.name,' score: ', str(scores[str(self.bot2.marker)]))
+        # if scores[str(bot.marker)] > scores[str(self.bot2.marker)]:
+        #     print(
+        #         "You beat the computer by %s points! Congratulations!"
+        #         % (scores[str(bot.marker)] - scores[str(self.bot2.marker)])
+        #     )
+        # elif scores[str(bot.marker)] < scores[str(self.bot2.marker)]:
+        #     print(
+        #         "You lost. The computer beat you by %s points."
+        #         % (scores[str(self.bot2.marker)] - scores[str(bot.marker)])
+        #     )
+        # else:
+        #     print("The game was a tie!")
 
     def drawBoard(self, board):
         # This function prints out the board that it was passed. Returns None.
@@ -306,7 +310,7 @@ class othello:
 
     def getNewBoard(self):
         # Creates a brand new, blank board data structure.
-        board = np.zeros((8, 8))
+        board = np.zeros((8, 8),dtype=int)
         # board = []
         # for i in range(8):
         #     board.append([" "] * 8)
@@ -447,8 +451,10 @@ class othello:
     def showPoints(self, mainBoard):
         # Prints out the current score.
         scores = self.getScoreOfBoard(mainBoard)
-        print(
-            "You have %d points. The computer has %d points."
-            % (scores[str(self.bot1.marker)], scores[str(self.bot2.marker)])
-        )
+        # print(
+        #     "You have %d points. The computer has %d points."
+        #     % (scores[str(self.bot1.marker)], scores[str(self.bot2.marker)])
+        # )
+        print(self.bot1.name,' score: ', str(scores[str(self.bot1.marker)]))
+        print(self.bot2.name,' score: ', str(scores[str(self.bot2.marker)]))
 
