@@ -59,6 +59,6 @@ class othello_eval:
         plt.ylabel("Proportion of " + self.bot1.search_mode + " wins")
         plt.legend()
         
-        #plt.savefig("./Search_Mode_Results/depth_"+str(self.bot1.depth)+"_"+self.bot1.search_mode+".png")
+        plt.savefig("./Search_Mode_Results/depth_"+str(self.bot1.depth)+"_"+self.bot1.search_mode+".png")
         plt.show()
 
