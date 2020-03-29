@@ -29,9 +29,18 @@ def adverserial_MC():
 
     # Simulation Params
     search_modes = ["MiniMax", "A-B Pruning", "Scout"]
-    debth_range = range(2, 4)
-    op_cond_range = np.arange(0, 20, 2)
-    mc_runs = 2
+    debth_range = range(3, 4)
+    op_cond_range = np.arange(0, 20, 3)
+    mc_runs = 1000
+
+    evaluation = othello_eval(
+        minimax_ai(1, depth=2, search_mode="Scout"),
+        decisionRule_ai(-1),
+        runs=mc_runs,
+        adverse=True,
+    )
+    evaluation.gameStartEval(values2test=(op_cond_range))
+    evaluation.plotGameStartResults(draw=False)
 
     for mode in search_modes:
         for d in debth_range:
