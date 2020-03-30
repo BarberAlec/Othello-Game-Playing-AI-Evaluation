@@ -29,30 +29,43 @@ def adverserial_MC():
 
     # Simulation Params
     search_modes = ["MiniMax", "A-B Pruning", "Scout"]
+    heuristics = ['All','Coin_Party','Stability','Frontier_Discs','Weight_Matrix','Corner_Closeness','Corner','Mobility']
     debth_range = range(3, 4)
-    op_cond_range = np.arange(0, 20, 3)
-    mc_runs = 1000
+    op_cond_range = np.arange(0, 1)
+    mc_runs = 3
 
-    evaluation = othello_eval(
-        minimax_ai(1, depth=2, search_mode="Scout"),
-        decisionRule_ai(-1),
-        runs=mc_runs,
-        adverse=True,
-    )
-    evaluation.gameStartEval(values2test=(op_cond_range))
-    evaluation.plotGameStartResults(draw=False)
 
-    for mode in search_modes:
-        for d in debth_range:
-            print("Running ", mode, " with a depth of ", d)
+    # evaluation = othello_eval(
+    #     minimax_ai(1, depth=2, search_mode="A-B Pruning"),
+    #     decisionRule_ai(-1),
+    #     runs=mc_runs,
+    #     adverse=True,
+    # )
+    # evaluation.gameStartEval(values2test=(op_cond_range))
+    # evaluation.plotGameStartResults(draw=False)
+
+    for f in range(len(heuristics)):
+        for s in range(f,len(heuristics)):
             evaluation = othello_eval(
-                minimax_ai(1, depth=d, search_mode=mode),
-                decisionRule_ai(-1),
-                runs=mc_runs,
-                adverse=True,
+            minimax_ai(1, depth=1, search_mode="A-B Pruning",heur=heuristics[f]),
+           minimax_ai(-1, depth=1, search_mode="A-B Pruning",heur=heuristics[s]),
+            runs=mc_runs,
+            adverse=True,
             )
             evaluation.gameStartEval(values2test=(op_cond_range))
             evaluation.plotGameStartResults(draw=False)
+
+    # for mode in search_modes:
+    #     for d in debth_range:
+    #         print("Running ", mode, " with a depth of ", d)
+    #         evaluation = othello_eval(
+    #             minimax_ai(1, depth=d, search_mode=mode),
+    #             decisionRule_ai(-1),
+    #             runs=mc_runs,
+    #             adverse=True,
+    #         )
+    #         evaluation.gameStartEval(values2test=(op_cond_range))
+    #         evaluation.plotGameStartResults(draw=False)
 
     # evaluation = othello_eval(
     #     minimax_ai(1, depth=2, search_mode="ab"),
@@ -80,3 +93,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
