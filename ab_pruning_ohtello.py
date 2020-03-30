@@ -37,23 +37,23 @@ class minimax_ai(othello.ai):
         self.printing = False
         self.nodesVistited = 0
         self.search_mode = search_mode
-        self.WEIGHTS = [[4, -3, 2, 2, 2, 2, -3, 4, ],
+        self.WEIGHTS = np.array([[4, -3, 2, 2, 2, 2, -3, 4, ],
                         [-3, -4, -1, -1, -1, -1, -4, -3, ],
                         [2, -1, 1, 0, 0, 1, -1, 2, ],
                         [2, -1, 0, 1, 1, 0, -1, 2, ],
                         [2, -1, 0, 1, 1, 0, -1, 2, ],
                         [2, -1, 1, 0, 0, 1, -1, 2, ],
                         [-3, -4, -1, -1, -1, -1, -4, -3, ],
-                        [4, -3, 2, 2, 2, 2, -3, 4]]
+                        [4, -3, 2, 2, 2, 2, -3, 4]])
         
-        self.WEIGHTS_2 = [[20, -3, 11, 8, 8, 11, -3, 20],
+        self.WEIGHTS_2 = np.array([[20, -3, 11, 8, 8, 11, -3, 20],
                         [-3, -7, -4, 1, 1, -4, -7, -3],
                         [11, -4, 2, 2, 2, 2, -4, 11],
                         [8, 1, 2, -3, -3, 2, 1, 8],
                         [8, 1, 2, -3, -3, 2, 1, 8],
                         [11, -4, 2, 2, 2, 2, -4, 11],
                         [-3, -7, -4, 1, 1, -4, -7, -3],
-                        [20, -3, 11, 8, 8, 11, -3, 20]]
+                        [20, -3, 11, 8, 8, 11, -3, 20]])
         
 
     def getMove(self, board):
@@ -243,9 +243,9 @@ class minimax_ai(othello.ai):
         for x in range(8):
             for y in range(8):
                 if board[x][y] == self.marker:
-                    total += self.WEIGHTS_2[x][y]
+                    total += self.WEIGHTS_2[x,y]
                 elif board[x][y] == -self.marker:
-                    total -= self.WEIGHTS_2[x][y]
+                    total -= self.WEIGHTS_2[x,y]
         if self.printing: print("Weight: ",total)
         return total
     
@@ -283,7 +283,7 @@ class minimax_ai(othello.ai):
                 if board[x][y] == self.marker:
                     p1_stable_val += 1
                 elif board[x][y] == -self.marker:
-                    p2_stable_val -= self.WEIGHTS[x][y]
+                    p2_stable_val -= self.WEIGHTS[x,y]
 
         return self.p1_p2_perc(p1_stable_val,p2_stable_val)
 
