@@ -8,7 +8,8 @@ import numpy as np
 
 def single_game():
     # Example single with human player against greedy algo
-    game = othello(human_ai(1), decisionRule_ai(-1))
+    search_modes = ["MiniMax", "A-B Pruning", "Scout"]
+    game = othello(minimax_ai(1, depth=4, search_mode=search_modes[0]), decisionRule_ai(-1))
     score = game.startgame(start_move=0)
 
     # Example single with Nearal Network against greedy algo
@@ -78,18 +79,40 @@ def adverserial_MC():
 
 
 def NearalNetwork_MC():
-    evaluation = othello_eval(NN_ai(1), decisionRule_ai(-1), runs=10)
-    evaluation.gameStartEval(values2test=(np.arange(0, 20, 2)))
+    op_cond_range = np.arange(0, 20, 3)
+    mc_runs = 4000
+
+    evaluation = othello_eval(NN_ai(1), decisionRule_ai(-1), runs=mc_runs)
+    evaluation.gameStartEval(values2test=(op_cond_range))
     evaluation.plotGameStartResults()
 
 
-def main():
-    # single_game()
+def SingleModeEval_MC():
+    # Temp Fucntion for testing one simulationat a time in a differnet process
 
-    adverserial_MC()
+    # Simulation Params
+    search_modes = ["MiniMax", "A-B Pruning", "Scout"]
+    debth_range = range(3, 4)
+    op_cond_range = np.arange(0, 20, 3)
+    mc_runs = 10
+
+    evaluation = othello_eval(
+        minimax_ai(1, depth=4, search_mode=search_modes[0]),
+        decisionRule_ai(-1),
+        runs=mc_runs,
+        adverse=True,
+    )
+    evaluation.gameStartEval(values2test=(op_cond_range))
+    evaluation.plotGameStartResults(draw=False)
+
+def main():
+    #single_game()
+
+    # adverserial_MC()
 
     # NearalNetwork_MC()
 
+    SingleModeEval_MC()
 
 if __name__ == "__main__":
     main()
