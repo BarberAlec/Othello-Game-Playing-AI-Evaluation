@@ -38,7 +38,9 @@ class NN_ai(othello.ai):
 
         if not self.isValidMove(board, self.marker, x, y):
             # If not a valid move, then use greedy algo
-            print("ERROR!")
+            
+            # This error print happens too often....
+            #print("ERROR!")
             move_output = self.greedy.getMove(board)
 
         #print("NN move: ", str(move_output[0]), ",", str(move_output[1]))

@@ -68,6 +68,15 @@ class othello_eval:
                 header=None,
                 index=None,
             )
+        else:
+            # IF NN, then we cannot save nodes visited
+            pd.DataFrame(results).to_csv(
+                "./Search_Mode_Results/"
+                + self.bot1.search_mode
+                + "_wins.csv",
+                header=None,
+                index=None,
+            )
         self.gameStartEvalResult = np.mean(results, axis=1)
         self.gameStartEvalVar = np.var(results, axis=1)
 
