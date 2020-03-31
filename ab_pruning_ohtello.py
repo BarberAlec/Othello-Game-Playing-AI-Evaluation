@@ -40,7 +40,7 @@ class minimax_ai(othello.ai):
 
         self.heur_name = heur
         self.heur_val = self.heur_switcher(heur)
-        self.WEIGHTS = [[4, -3, 2, 2, 2, 2, -3, 4, ],
+        self.WEIGHTS = np.array([[4, -3, 2, 2, 2, 2, -3, 4, ],
                         [-3, -4, -1, -1, -1, -1, -4, -3, ],
                         [2, -1, 1, 0, 0, 1, -1, 2, ],
                         [2, -1, 0, 1, 1, 0, -1, 2, ],

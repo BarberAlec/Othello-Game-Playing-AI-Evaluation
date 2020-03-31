@@ -108,11 +108,11 @@ def SingleModeEval_MC():
 def main():
     #single_game()
 
-    # adverserial_MC()
+    adverserial_MC()
 
     # NearalNetwork_MC()
 
-    SingleModeEval_MC()
+    # SingleModeEval_MC()
 
 if __name__ == "__main__":
     main()
