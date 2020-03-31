@@ -33,7 +33,7 @@ def adverserial_MC():
     heuristics = ['All','Coin_Party','Stability','Frontier_Discs','Weight_Matrix','Corner_Closeness','Corner','Mobility']
     debth_range = range(3, 4)
     op_cond_range = np.arange(0, 1)
-    mc_runs = 3
+    mc_runs = 2000
 
 
     # evaluation = othello_eval(
