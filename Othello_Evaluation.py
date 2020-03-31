@@ -59,11 +59,15 @@ class othello_eval:
                 header=None,
                 index=None,
             )
+            try:
+                lab = self.bot2.heur_name
+            except:
+                lab = ""
             pd.DataFrame(results).to_csv(
                 "./Search_Mode_Results/"
-                + self.bot1.search_mode
-                + "_depth"
-                + str(self.bot1.depth)
+                + self.bot1.heur_name
+                + "vs"
+                + lab
                 + "_wins.csv",
                 header=None,
                 index=None,
@@ -136,11 +140,19 @@ class othello_eval:
         # ax.xaxis.set_major_formatter(FormatStrFormatter('%0.01f'))
         xticks = np.arange(0, self.gameStartEvalTestedVals[-1] + 1, 2)
         ax.set_xticks(xticks)
+        try:
+            lab = self.bot2.heur_name
+        except:
+            lab = ""
         fig.savefig(
             "./Search_Mode_Results/depth_"
             + str(self.bot1.depth)
             + "_"
             + self.bot1.search_mode
+            + "_"
+            + self.bot1.heur_name
+            + "vs"
+            + lab
             + ".png"
         )
         if draw:

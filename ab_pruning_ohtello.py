@@ -28,7 +28,7 @@ Accessible Functions for Othello Board
 
 
 class minimax_ai(othello.ai):
-    def __init__(self, marker, depth,search_mode="Scout"):
+    def __init__(self, marker, depth,search_mode="Scout",heur='All'):
         self.name = "minimax"
         self.marker = marker
         self.next_state_mn = []
@@ -37,7 +37,10 @@ class minimax_ai(othello.ai):
         self.printing = False
         self.nodesVistited = 0
         self.search_mode = search_mode
-        self.WEIGHTS = np.array([[4, -3, 2, 2, 2, 2, -3, 4, ],
+
+        self.heur_name = heur
+        self.heur_val = self.heur_switcher(heur)
+        self.WEIGHTS = [[4, -3, 2, 2, 2, 2, -3, 4, ],
                         [-3, -4, -1, -1, -1, -1, -4, -3, ],
                         [2, -1, 1, 0, 0, 1, -1, 2, ],
                         [2, -1, 0, 1, 1, 0, -1, 2, ],
@@ -55,11 +58,23 @@ class minimax_ai(othello.ai):
                         [-3, -7, -4, 1, 1, -4, -7, -3],
                         [20, -3, 11, 8, 8, 11, -3, 20]])
         
+    def heur_switcher(self,arg):
+        switcher = {
+        'All': self.heur_all,
+        'Coin_Party': self.heur_coinparty,
+        'Stability': self.heur_stability,
+        'Frontier_Discs': self.heur_frontier_discs,
+        'Weight_Matrix': self.heur_cornerweight,
+        'Corner_Closeness': self.heur_corner_closeness,
+        'Corner': self.heur_corner,
+        'Mobility': self.heur_mobility,
+        }
+        return switcher.get(arg,self.heur_all)
+        
 
     def getMove(self, board):
         if self.printing:
             print("Im player: ", self.marker+2)
-
 
         # Run MiniMax
         # new_eval_ab = self.minimax(board, self.depth, True)
@@ -223,7 +238,7 @@ class minimax_ai(othello.ai):
                 p1+=1
             elif board[x][y] == -self.marker:
                 p2+=1
-        return 25*(p1-p2)
+        return (p1-p2)
     
     def heur_corner_closeness(self, board):
         close_corners = [(0,1),(1,0),(0,6),(1,7),(7,1),(6,0),(6,7),(7,6)]
@@ -276,25 +291,27 @@ class minimax_ai(othello.ai):
     # Semi (0) - Potentially be flanked in future, not immediately
     # Un (-1) - Can be flanked at very next move ---NOT COMPLETED----
     def heur_stability(self,board):
-        p1_stable_val = 0
-        p2_stable_val = 0
-        for x in range(8):
-            for y in range(8):
-                if board[x][y] == self.marker:
-                    p1_stable_val += 1
-                elif board[x][y] == -self.marker:
-                    p2_stable_val -= self.WEIGHTS[x,y]
+        children = self.get_children_states(board, False)
+        sum1 = 0
+        me = len(np.where(board == 1)[0])
+        for child in children:
+            me = len(np.where(board == 1)[0])
+            diff = board - child[0]
+            switch1 = len(np.where(diff == self.marker*2)[0])
+            sum1-=switch1
+            sum1+=me
+        return sum1
 
-        return self.p1_p2_perc(p1_stable_val,p2_stable_val)
 
     # Weights from paper -  "Playing Othello with Artificial Intelligence" (http://mkorman.org/othello.pdf)
-    def heur_val(self,board):
+    def heur_all(self,board):
         score = (801.724*self.heur_corner(board) 
         + 382.026*self.heur_corner_closeness(board) 
         + 78.922*self.heur_mobility(board) 
         + 10*self.heur_coinparty(board)
         + 10*self.heur_cornerweight(board) 
         + 74.396*self.heur_frontier_discs(board))
+        + 100*self.heur_stability(board)
         return score
     
     def best_move(self,board):
@@ -322,7 +339,7 @@ if __name__ == '__main__':
 
     # X is 1, O is -1
     # Create new instance of othello game with spefied ai players
-    game = othello(minimax_ai(1,depth=2,search_mode="MiniMax"), decisionRule_ai(-1))
+    game = othello(minimax_ai(1,depth=2,search_mode="A-B Pruning"), minimax_ai(-1,depth=2,search_mode="A-B Pruning",heur="Coin_Party"))
 
     # Begin game
     score = game.startgame()
