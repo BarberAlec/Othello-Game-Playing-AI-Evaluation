@@ -32,8 +32,8 @@ def adverserial_MC():
     search_modes = ["MiniMax", "A-B Pruning", "Scout"]
     heuristics = ['All','Coin_Party','Stability','Frontier_Discs','Weight_Matrix','Corner_Closeness','Corner','Mobility']
     debth_range = range(3, 4)
-    op_cond_range = np.arange(0, 30)
-    mc_runs = 100
+    op_cond_range = np.arange(0, 30,5)
+    mc_runs = 500
 
 
     # evaluation = othello_eval(
