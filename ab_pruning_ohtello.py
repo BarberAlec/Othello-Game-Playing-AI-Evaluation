@@ -28,7 +28,7 @@ Accessible Functions for Othello Board
 
 
 class minimax_ai(othello.ai):
-    def __init__(self, marker, depth,search_mode="Scout",heur='All'):
+    def __init__(self, marker, depth,search_mode="Scout",heur='Weight_Matrix'):
         self.name = "minimax"
         self.marker = marker
         self.next_state_mn = []
@@ -119,11 +119,11 @@ class minimax_ai(othello.ai):
             new_board = self.createChildBoardState(current_board_state, move[0], move[1], color)
             children.append((new_board,self.heur_val(new_board)))
             
-        sortedNodes = sorted(children, key = lambda node: node[1], reverse = True)
+        sortedNodes = sorted(children, key = lambda node: node[1], reverse = True if color==self.marker else False)
         sortedNodes = [node[0] for node in sortedNodes]
         for node in sortedNodes:
             res_children.append(node)
-        return res_children
+        return res_children 
 
     def game_finished(self, board):
         if 0 in board:
@@ -194,6 +194,32 @@ class minimax_ai(othello.ai):
             if alpha >= beta:
                 break
         return alpha
+
+    def ng(self,current_board_state,depth,alpha,beta,color):
+        if depth == 0 or self.game_finished(current_board_state):
+            self.nodesVistited+=1
+            return self.heur_val(current_board_state)
+        
+        score = float('-inf')
+        n = beta
+        for child in self.get_ordered_children_states(current_board_state,color):
+            self.nodesVistited+=1
+            cur = -self.ng(child,depth-1,-n,-alpha,-color)
+            if(cur>score):
+                if(n==beta or depth<=2):
+                    score = cur
+                else:
+                    self.nodesVistited+=1
+                    score = -self.ng(child,depth-1,-beta,-cur,-color)
+            if(score>alpha):
+                alpha = score
+            if(alpha>=beta):
+                return alpha
+            n = alpha+1
+        return score
+
+
+
  
     def p1_p2_perc(self,p1,p2):
         if ((p1 !=0) and (p2 !=0 )) :
@@ -293,9 +319,9 @@ class minimax_ai(othello.ai):
     def heur_stability(self,board):
         children = self.get_children_states(board, False)
         sum1 = 0
-        me = len(np.where(board == 1)[0])
+        me = len(np.where(board == self.marker)[0])
         for child in children:
-            me = len(np.where(board == 1)[0])
+            me = len(np.where(board == self.marker)[0])
             diff = board - child[0]
             switch1 = len(np.where(diff == self.marker*2)[0])
             sum1-=switch1
@@ -324,8 +350,8 @@ class minimax_ai(othello.ai):
             if self.search_mode == "MiniMax":
                 eval = self.minimax(child[0], self.depth-1, False)
             elif self.search_mode == "Scout":
-                eval = self.nega_scout(child[0], self.depth-1,float('-inf'),float('inf'), 1)
-            if self.search_mode == "A-B Pruning":
+                eval = -self.nega_scout(child[0], self.depth-1,float('-inf'),float('inf'), -self.marker)
+            elif self.search_mode == "A-B Pruning":
                 eval = self.alpha_beta_minmax(child[0], self.depth-1,False,float('-inf'),float('inf'))
             if eval > max_Eval:
                 max_Eval = eval
@@ -339,7 +365,7 @@ if __name__ == '__main__':
 
     # X is 1, O is -1
     # Create new instance of othello game with spefied ai players
-    game = othello(minimax_ai(1,depth=2,search_mode="A-B Pruning"), minimax_ai(-1,depth=2,search_mode="A-B Pruning",heur="Coin_Party"))
-
+    # game = othello(minimax_ai(1,depth=4,search_mode="Scout",heur="Weight_Matrix"), minimax_ai(-1,depth=2,search_mode="MiniMax",heur="Weight_Matrix"))
+    game = othello(minimax_ai(1,depth=4,search_mode="Scout",heur="Weight_Matrix"), decisionRule_ai(-1))
     # Begin game
     score = game.startgame()
