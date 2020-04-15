@@ -1,4 +1,4 @@
-from Othello import othello
+from othelloGame import othello
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
@@ -128,16 +128,9 @@ class othello_eval:
             label=self.bot1.search_mode + ": Depth=" + str(self.bot1.depth),
         )
         ax.set_ylim((0, 1))
-        # plt.title(
-        #     self.bot1.search_mode
-        #     + " vs "
-        #     + self.bot2.name
-        #     + " : Effect of game start time to performance"
-        # )
         ax.set_xlabel("Number of random turns before game begins")
         ax.set_ylabel("Proportion of wins")
         ax.legend()
-        # ax.xaxis.set_major_formatter(FormatStrFormatter('%0.01f'))
         xticks = np.arange(0, self.gameStartEvalTestedVals[-1] + 1, 2)
         ax.set_xticks(xticks)
         try:

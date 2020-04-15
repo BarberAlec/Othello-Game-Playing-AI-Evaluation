@@ -6,7 +6,7 @@ import copy
 import numpy as np
 from fastai.vision import *
 import matplotlib.pyplot as plt
-from Othello import othello
+from othelloGame import othello
 
 
 

@@ -1,6 +1,6 @@
-from Othello import othello
-from othello_ai import human_ai, decisionRule_ai, NN_ai, minimax_ai
-from Othello_Evaluation import othello_eval
+from othelloGame import othello
+from othelloAI import human_ai, decisionRule_ai, NN_ai, minimax_ai
+from othelloEval import othello_eval
 import numpy as np
 
 
