@@ -85,7 +85,7 @@ class NN_ai(othello.ai):
         self.name = "NN"
         if marker != -1 and marker != +1:
             print('ERROR: please pass a marker as either +1 or -1.')
-            return -1
+            return
         self.marker = marker
         self.learn = load_learner("", "CNN_research/trained_othello_CNN.pkl")
         self.learn.model.float()
