@@ -3,6 +3,19 @@ from othelloAI import human_ai, decisionRule_ai, NN_ai, minimax_ai
 from othelloEval import othello_eval
 import numpy as np
 
+'''
+Simlulations should all start from this file.
+
+Instructions:
+> create a new game by calling othello(ai_1,ai_2)
+> specify ai_1 and ai_2 with a marker -1 or +1 only
+> Use .start() to launch the game in the command window
+> decisionRule_ai, NN_ai, minimax_ai are AI available, if you wish to play, use 
+    human_ai as an AI argument
+
+Enjoy
+'''
+
 
 def single_game():
     # Example single with human player against greedy algo
