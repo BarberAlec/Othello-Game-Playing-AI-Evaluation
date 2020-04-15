@@ -1,20 +1,18 @@
 from Othello import othello
-from othello_ai import human_ai, decisionRule_ai
-from NN_ai import NN_ai
+from othello_ai import human_ai, decisionRule_ai, NN_ai, minimax_ai
 from Othello_Evaluation import othello_eval
-from ab_pruning_ohtello import minimax_ai
 import numpy as np
 
 
 def single_game():
     # Example single with human player against greedy algo
-    search_modes = ["MiniMax", "A-B Pruning", "Scout"]
-    game = othello(minimax_ai(1, depth=4, search_mode=search_modes[0]), decisionRule_ai(-1))
-    score = game.startgame(start_move=0)
+    # search_modes = ["MiniMax", "A-B Pruning", "Scout"]
+    # game = othello(minimax_ai(1, depth=4, search_mode=search_modes[0]), decisionRule_ai(-1))
+    # score = game.startgame(start_move=0)
 
     # Example single with Nearal Network against greedy algo
-    # game = othello(NN_ai(1), decisionRule_ai(-1))
-    # score = game.startgame(start_move=0)
+    game = othello(NN_ai(1), decisionRule_ai(-1))
+    score = game.startgame(start_move=0)
 
     # Example game: two humans, board starts from a random
     # legal Board State after 5 moves
@@ -106,9 +104,9 @@ def SingleModeEval_MC():
     evaluation.plotGameStartResults(draw=False)
 
 def main():
-    #single_game()
+    single_game()
 
-    adverserial_MC()
+    #adverserial_MC()
 
     # NearalNetwork_MC()
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 View Past competitions, Contains competitions from 2003-2006 each with around 500 games. Competitions between expert players.
 
