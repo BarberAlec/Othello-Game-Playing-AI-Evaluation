@@ -17,8 +17,9 @@ To analyse and evaluate state-of-the-art AI algorithms to solve a problem of you
 
 ## Algorithms Investigated
 - [x] Nearal Networks
+- [X] MiniMax
 - [x] Alpha-Beta Pruning
-- [x] Scout Algorithm
+- [x] Nega Scout
 
 
 ## Dependancy Management
@@ -32,3 +33,45 @@ Used for managing dependencies in python project
 - `pipenv run python algo_eval.py` - Runs Evaluation between MinMax (X) and decisionRule_ai(O) 
 - `pipenv --venv` - Get path to Virtual Environment
 - `pipenv install` - Installs dependencies from pipfile
+
+## An Analysis of Othello AI Strategies
+
+
+![Report_page_1](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-01.jpg)
+
+_________________
+
+![Report_page_2](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-02.jpg)
+
+_________________
+
+![Report_page_3](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-03.jpg)
+
+_________________
+
+![Report_page_4](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-04.jpg)
+
+_________________
+
+![Report_page_5](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-05.jpg)
+
+_________________
+
+![Report_page_6](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-06.jpg)
+
+_________________
+
+![Report_page_6](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-07.jpg)
+
+_________________
+
+![Report_page_6](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-08.jpg)
+
+_________________
+
+![Report_page_6](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-09.jpg)
+
+_________________
+
+![Report_page_6](assets/pdf_images/An_Analysis_of_Othello_AI_Strategies-10.jpg)
+
