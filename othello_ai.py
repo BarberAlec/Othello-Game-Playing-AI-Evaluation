@@ -84,7 +84,7 @@ class NN_ai(othello.ai):
     def __init__(self, marker):
         self.name = "NN"
         self.marker = marker
-        self.learn = load_learner("", "trained_othello_CNN.pkl")
+        self.learn = load_learner("", "CNN_research/trained_othello_CNN.pkl")
         self.learn.model.float()
         self.greedy = decisionRule_ai(marker)
         self.search_mode = 'NN'
